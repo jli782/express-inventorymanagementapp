@@ -32,13 +32,20 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 exports.mechs_list = asyncHandler(async (req, res, next) => {
   // res.send(`NOT IMPLEMENTED: Mechs list`);
-  const mechs_data = await Mechs.find({}).populate("category").exec();
+  const mechs_data = await Mechs.find({}, "name model imageURL weight")
+    .populate("category")
+    .exec();
   console.log(mechs_data);
   res.render("mechs_list", { title: "List of Mechs", data: mechs_data });
 });
 
 exports.mechs_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Mechs detail ${req.params.id}`);
+  // res.send(`NOT IMPLEMENTED: Mechs detail ${req.params.id}`);
+  const mechs_data = await Mechs.findById(req.params.id)
+    .populate("category")
+    .exec();
+  console.log(mechs_data);
+  res.render("mechs_detail", { title: "Mech", data: mechs_data });
 });
 
 exports.mechs_create_GET = asyncHandler(async (req, res, next) => {

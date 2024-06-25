@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= data.model %>&nbsp;&nbsp;-&nbsp;&nbsp;<%= data.name %></title>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <div class="col s8">
+          <h4>Model: <%= data.model %></h4>
+          <h4>Name: <%= data.name %></h4>
+          <p>Era: <%= data.era %> | Tech: <%= data.tech %></p>
+          <p>Class: <%= data.category.name %> | Tonnage: <%= data.weight %></p>
+          <p><%= data.description %></p>
+          <p>Value: <%= data.price_formatted %> c-bills</p>
+          <p>Battle Value: <%= data.battle_value %></p>
+          <strong>Armaments:</strong>
+          <% for (let i = 0; i < data.equipment.length; i++){ %> <% if (i ==
+          data.equipment.length - 1){ %>
+          <span><%= data.equipment[i] %></span>
+          <% } else { %>
+          <span><%= data.equipment[i] %>, </span>
+          <% } %> <% } %>
+        </div>
+        <div class="col s4">
+          <image
+            src="<%= data.imageURL %>"
+            width="300"
+            style="border: 1px solid black; margin-top: 4rem"
+            class="right materialboxed valign-wrapper"
+          />
+        </div>
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $(".materialboxed").materialbox();
+    });
+  </script>
+</html>

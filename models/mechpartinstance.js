@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { DateTime } = require("luxon");
+
 const Schema = mongoose.Schema;
 
 const MechPartInstanceSchema = new Schema({
@@ -25,4 +27,15 @@ MechPartInstanceSchema.virtual("url").get(function () {
   return `/shopwiki/mechpartinstance/${this._id}`;
 });
 
+MechPartInstanceSchema.virtual("dateReceived_formatted").get(function () {
+  return this.dateReceived
+    ? this.dateReceived.toLocaleDateString(DateTime.DATETIME_MED)
+    : `???`;
+});
+
+MechPartInstanceSchema.virtual("dateSold_formatted").get(function () {
+  return this.dateSold
+    ? this.dateSold.toLocaleDateString(DateTime.DATETIME_MED)
+    : `???`;
+});
 module.exports = mongoose.model("MechPartInstance", MechPartInstanceSchema);

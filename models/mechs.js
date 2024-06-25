@@ -24,4 +24,7 @@ MechsSchema.virtual("url").get(function () {
   return `/shopwiki/mechs/${this._id}`;
 });
 
+MechsSchema.virtual("price_formatted").get(function () {
+  return new Intl.NumberFormat().format(this.price);
+});
 module.exports = mongoose.model("Mechs", MechsSchema);

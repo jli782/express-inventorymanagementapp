@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %>: <%= data.name %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <div class="row">
+        <h1><%= title %>: <%= data.name %></h1>
+        <div class="col">
+          <h5>
+            <strong>Weight Range: </strong> <%= data.weightMin %> - <%=
+            data.weightMax %> tons
+          </h5>
+          <br />
+          <p><%= data.description %></p>
+        </div>
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+</html>

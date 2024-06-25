@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <!-- <div class="section no-pad-bot"> -->
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <% if (data.length > 0 ){ %>
+        <div class="col s10">
+          <table class="centered striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th># of Mech Parts Stored</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let i = 0; i < data.length; i++) { %>
+              <tr>
+                <td><%= data[i].name %></td>
+                <td><%= storage_count[i] %></td>
+                <td><a href="<%= data[i].url %>">Explore</a></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <p>There are no storage bays in the shop.</p>
+        <% } %>
+      </div>
+    </div>
+    <!-- </div> -->
+    <%- include('footer'); -%>
+  </body>
+</html>

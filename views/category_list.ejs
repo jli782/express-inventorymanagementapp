@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <div class="col s12">
+          <% if (data.length > 0) { %>
+          <table class="centered striped">
+            <thead>
+              <th>Name</th>
+              <th>Weight Range (Tons)</th>
+              <th>Details</th>
+            </thead>
+            <tbody>
+              <% for (let category of data) { %>
+              <tr>
+                <td><%= category.name %></td>
+                <td><%= category.weightMin %> - <%= category.weightMax %></td>
+                <td><a href="<%= category.url %>">Link</a></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+          <% } else { %>
+          <p>There are no mech categories at the shop.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <%- include('footer'); -%>
+  </body>
+</html>

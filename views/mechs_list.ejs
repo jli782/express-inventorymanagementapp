@@ -11,43 +11,37 @@
       <div class="row">
         <h1><%= title %></h1>
         <p>A list of mechs at the shop:</p>
+        <% if (data.length > 0) { %>
         <dl>
           <% for (let mech of data){ %>
-          <div class="row">
-            <h5>
-              <a href="<%= mech.url %>"><%= mech.model %> - <%= mech.name %></a>
-            </h5>
-            <div class="col s8" style="padding: 0%">
-              <p>
-                Tech: <%= mech.tech%> | Era: <%= mech.era %> | Tonnage: <%=
-                mech.weight %> | Class: <%=mech.category.name %>
-              </p>
-              <p><%= mech.description %></p>
-              <p>
-                Value: <%= mech.price %> c-bills | Battle Value: <%=
-                mech.battle_value %>
-              </p>
-              <p>
-                <strong>List of Armaments:</strong>
-                <% for (let i = 0; i < mech.equipment.length; i++){ %> <% if (i
-                == mech.equipment.length - 1){ %>
-                <span><%= mech.equipment[i] %></span>
-                <% } else { %>
-                <span><%= mech.equipment[i] %>, </span>
-                <% } %> <% } %>
-              </p>
-            </div>
-            <div class="col s4">
-              <image
-                src="<%= mech.imageURL %>"
-                height="200"
-                width="200"
-                class="right"
-              />
+          <div class="col s12 m4">
+            <div class="card">
+              <div class="card-image">
+                <img src="<%= mech.imageURL %>" />
+                <span class="card-title"><%= mech.model %></span>
+              </div>
+              <div class="card-content">
+                <p>
+                  <strong><%= mech.model %></strong>&nbsp;&nbsp;&nbsp;&nbsp;<%=
+                  mech.name %>
+                </p>
+                <br />
+                <p>
+                  <strong>Class: </strong><%= mech.category.name %> battlemech
+                </p>
+                <br />
+                <p><strong>Tonnage: </strong><%= mech.weight %> tons</p>
+              </div>
+              <div class="card-action">
+                <a href="<%= mech.url %>">Explore</a>
+              </div>
             </div>
           </div>
           <% } %>
         </dl>
+        <% } else { %>
+        <p>There are no mechs offered at the shop.</p>
+        <% } %>
         <!---->
       </div>
     </div>

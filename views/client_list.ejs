@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <div class="col s12">
+          <% if (data.length > 0){ %>
+          <table class="striped centered">
+            <thead>
+              <th>Client Name</th>
+              <th>Client Details</th>
+            </thead>
+            <tbody>
+              <tr>
+                <% for (let client of data){ %>
+                <td><%= client.name %></td>
+                <td><a href="<%= client.url %>">Link</a></td>
+                <% } %>
+              </tr>
+            </tbody>
+          </table>
+          <% } else { %>
+          <p>There are currently no clients on record at the shop.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+</html>
