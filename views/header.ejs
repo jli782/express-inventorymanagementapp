@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> sidebar</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- Compiled and minified JavaScript -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
+      integrity="sha512-NiWqa2rceHnN3Z5j6mSAvbwwg3tiwVNxiAQaaSMSXnRRDh5C2mk/+sKQRw8qjV1vN4nf8iK2a0b048PnHbyx+Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <!-- /public/stylesheets/style.css-->
+    <link
+      rel="stylesheet"
+      href="/stylesheets/style.css"
+      media="screen,projection"
+      type="text/css"
+    />
+  </head>
+  <body>
+    <!-- <div class="container"> -->
+    <!-- Dropdown Structure -->
+
+    <ul id="dropdown1" class="dropdown-content" style="width: 188px">
+      <li><a href="/shopwiki/mechs/create">Create new mech</a></li>
+      <li>
+        <a href="/shopwiki/mechpartinstance/create"
+          >Create new mech part instance</a
+        >
+      </li>
+      <!-- <li class="divider"></li> -->
+      <li><a href="/shopwiki/storage/create">Create new storage</a></li>
+      <li><a href="/shopwiki/category/create">Create new category</a></li>
+      <li><a href="/shopwiki/client/create">Create new client</a></li>
+      <li>
+        <a href="/shopwiki/manufacturer/create">Create new manufacturer</a>
+      </li>
+    </ul>
+    <nav class="blue-grey darken-1">
+      <div class="nav-wrapper">
+        <a
+          href="/shopwiki"
+          class="brand-logo right"
+          style="padding-right: 0.5rem"
+          >Logo</a
+        >
+        <ul class="left hide-on-med-and-down" id="nav-mobile">
+          <li class="active"><a href="/shopwiki">Home</a></li>
+          <li><a href="/shopwiki/mechs">All Mechs</a></li>
+          <li>
+            <a href="/shopwiki/mechpartinstances">All Mech Part Instances</a>
+          </li>
+          <li><a href="/shopwiki/storages">All Storages</a></li>
+          <li><a href="/shopwiki/categories">All Categories</a></li>
+          <li><a href="/shopwiki/clients">All Clients</a></li>
+          <li><a href="/shopwiki/manufacturers">All Manufacturers</a></li>
+          <!-- Dropdown Trigger -->
+          <li>
+            <a class="dropdown-trigger" href="#!" data-target="dropdown1"
+              >Create<i class="material-icons right">arrow_drop_down</i></a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- </div> -->
+  </body>
+  <script>
+    $(".dropdown-trigger").dropdown();
+
+    /* var navbtns = document.querySelectorAll("div ul li");
+    for (let navbtn of navbtns) {
+      navbtn.addEventListener("click", function () {
+        var current = document.getElementsByClassName("active");
+        current[0].className = current[0].classList.remove("active");
+        this.className += " active";
+      });
+    } */
+    $(document).ready(function () {
+      $("div ul li").on("click", function () {
+        $("div ul li").hasClass("active").removeClass("active");
+        $(this).addClass("active");
+        console.log($(this));
+      });
+    });
+  </script>
+</html>

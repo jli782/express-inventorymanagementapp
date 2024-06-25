@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <!-- <div class="section no-pad-bot"> -->
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <p>Welcome to <%= title %></p>
+        <hr />
+        <p>The BT inventory management records the following data:</p>
+        <ul>
+          <li>
+            <strong>Number of Mechs: </strong><%= shop_data.mechs_count %>
+          </li>
+          <li>
+            <strong>Number of Available Mech Part Instances for sale: </strong
+            ><%= shop_data.mech_part_instance_count%>
+          </li>
+          <li>
+            <strong>Number of Storage Bays: </strong><%=
+            shop_data.storage_count%>
+          </li>
+          <li>
+            <strong>Number of Mech Categories: </strong><%=
+            shop_data.category_count%>
+          </li>
+          <li>
+            <strong>Number of Clients: </strong><%= shop_data.client_count%>
+          </li>
+          <li>
+            <strong>Number of Manufacturers: </strong><%=
+            shop_data.manufacturer_count%>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- </div> -->
+    <%- include('footer'); -%>
+  </body>
+</html>

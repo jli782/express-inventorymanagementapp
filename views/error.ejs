@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <!-- <div class="section no-pad-bot"> -->
+    <div class="container">
+      <div class="row">
+        <h2><%= message %></h1>
+        <h3><%= error.status %></h2>
+        <pre><%= error.stack %></pre>
+      </div>
+    </div>
+    <!-- </div> -->
+    <%- include('footer'); -%>
+  </body>
+</html>

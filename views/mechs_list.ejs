@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <!-- <div class="section no-pad-bot"> -->
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <p>A list of mechs at the shop:</p>
+        <dl>
+          <% for (let mech of data){ %>
+          <div class="row">
+            <h5>
+              <a href="<%= mech.url %>"><%= mech.model %> - <%= mech.name %></a>
+            </h5>
+            <div class="col s8" style="padding: 0%">
+              <p>
+                Tech: <%= mech.tech%> | Era: <%= mech.era %> | Tonnage: <%=
+                mech.weight %> | Class: <%=mech.category.name %>
+              </p>
+              <p><%= mech.description %></p>
+              <p>
+                Value: <%= mech.price %> c-bills | Battle Value: <%=
+                mech.battle_value %>
+              </p>
+              <p>
+                <strong>List of Armaments:</strong>
+                <% for (let i = 0; i < mech.equipment.length; i++){ %> <% if (i
+                == mech.equipment.length - 1){ %>
+                <span><%= mech.equipment[i] %></span>
+                <% } else { %>
+                <span><%= mech.equipment[i] %>, </span>
+                <% } %> <% } %>
+              </p>
+            </div>
+            <div class="col s4">
+              <image
+                src="<%= mech.imageURL %>"
+                height="200"
+                width="200"
+                class="right"
+              />
+            </div>
+          </div>
+          <% } %>
+        </dl>
+        <!---->
+      </div>
+    </div>
+    <!-- </div> -->
+    <%- include('footer'); -%>
+  </body>
+</html>
