@@ -17,6 +17,33 @@
           <br />
           <p><%= data.description %></p>
         </div>
+        <div class="row">
+          <div class="col s12">
+            <% if (mech_list_data.length > 0){ %>
+            <h6>List of Mechs in the <%= data.name %> class</h6>
+            <hr />
+            <br />
+            <table class="striped centered">
+              <thead>
+                <th>Model</th>
+                <th>Name</th>
+                <th>Mech Detail</th>
+              </thead>
+              <tbody>
+                <% for (let mech of mech_list_data){ %>
+                <tr>
+                  <td><%= mech.model %></td>
+                  <td><%= mech.name %></td>
+                  <td><a href="<%= mech.url %>">Link</a></td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+            <% } else { %>
+            <p>The shop currently has no mechs of <%= data.name %> class.</p>
+            <% } %>
+          </div>
+        </div>
       </div>
     </div>
     <%- include('footer'); -%>

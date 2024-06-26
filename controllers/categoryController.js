@@ -1,5 +1,7 @@
 const Category = require("../models/category");
+const Mechs = require("../models/mechs");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 exports.category_list = asyncHandler(async (req, res, next) => {
   const category_data = await Category.find({}, "name weightMin weightMax")
@@ -15,21 +17,85 @@ exports.category_list = asyncHandler(async (req, res, next) => {
 
 exports.category_detail = asyncHandler(async (req, res, next) => {
   const category_detail_data = await Category.findById(req.params.id).exec();
-  console.log(category_detail_data);
+  const mech_list_by_category = await Mechs.find({}, "name model")
+    .where("weight")
+    .gte(category_detail_data.weightMin)
+    .lte(category_detail_data.weightMax)
+    .exec();
+  console.log(category_detail_data, mech_list_by_category);
 
   res.render("category_detail", {
     title: `Category Detail`,
     data: category_detail_data,
+    mech_list_data: mech_list_by_category,
   });
 });
 
 exports.category_create_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Category create GET`);
+  res.render("category_form", {
+    title: `Create Category`,
+    errors: undefined,
+    category: undefined,
+  });
 });
 
-exports.category_create_POST = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Category create POST`);
-});
+exports.category_create_POST = [
+  body("name", "Category name must not be empty.")
+    .trim()
+    .isLength({ min: 4 })
+    .isAlphanumeric()
+    .withMessage(`Category name is not alphanumeric`)
+    .escape(),
+  body("weightMin", "Minimum weight is empty.")
+    .trim()
+    .isInt({
+      gt: -1,
+      lt: 999,
+    })
+    .withMessage(`Minimum Weight is not a positive integer or out of bounds.`),
+  body("weightMax", "Maximum weight is empty.")
+    .trim()
+    .isInt({ gt: -1, lt: 999 })
+    .withMessage(`Maximum Weight is not a positive integer or out of bounds.`)
+    .ltrim(`0`),
+  body(`description`, `Category description is empty.`)
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+
+    const category = new Category({
+      name: req.body.name,
+      weightMin: req.body.weightMin,
+      weightMax: req.body.weightMax,
+      description: req.body.description,
+    });
+    if (!err.isEmpty()) {
+      console.log(category);
+      res.render("category_form", {
+        title: `Create Category`,
+        errors: err.array(),
+        category: category,
+      });
+      return;
+    } else {
+      // form data is valid category, check if exists and if not, then save to db.
+      console.log(`form data is valid category`);
+      const categoryExists = await Category.findOne({
+        name: req.body.name,
+      })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
+      if (categoryExists) {
+        res.redirect(categoryExists.url);
+      } else {
+        await category.save();
+        res.redirect(category.url);
+      }
+    }
+  }),
+];
 
 exports.category_delete_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Category delete GET`);

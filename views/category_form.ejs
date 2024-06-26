@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <form class="col s12" method="POST">
+          <div class="input-field col s7">
+            <input
+              placeholder="Ultra-light, Light, Medium etc."
+              type="text"
+              class="validate"
+              name="name"
+              id="name"
+              required
+              value="<% if (category !== undefined) { %><%= category.name %><% } %>"
+            />
+            <label for="name">Category Name</label>
+          </div>
+          <div class="col">
+            <div class="input-field col s4">
+              <input
+                placeholder="10 etc."
+                type="number"
+                class="validate"
+                name="weightMin"
+                id="weightMin"
+                required
+                value="<% if (category !== undefined) { %><%= category.weightMin %><% } %>"
+              />
+              <label for="weightMin">Minimum Weight</label>
+            </div>
+            <div class="input-field col s4">
+              <input
+                placeholder="20 etc."
+                type="number"
+                class="validate"
+                name="weightMax"
+                id="weightMax"
+                required
+                value="<% if (category !== undefined) { %><%= category.weightMax %><% } %>"
+              />
+              <label for="weightMax">Maximum Weight</label>
+            </div>
+          </div>
+
+          <div class="input-field col s11">
+            <textarea
+              id="description"
+              name="description"
+              class="materialize-textarea"
+              placeholder="A description of the category goes here."
+              required
+            >
+<% if (category !== undefined){ %><%= category.description %><% } %></textarea
+            >
+            <label for="description">Category Description</label>
+          </div>
+          <div class="input-field col">
+            <button class="btn waves-effect waves-light" type="submit">
+              Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </form>
+        <% if (errors) { %>
+        <ul>
+          <% for (let error of errors){ %>
+          <li><%= error.msg %></li>
+          <% } %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+</html>
