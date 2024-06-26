@@ -3,25 +3,24 @@ const asyncHandler = require("express-async-handler");
 
 exports.mechpartinstance_list = asyncHandler(async (req, res, next) => {
   const mech_part_instance_data = await MechPartInstance.find({})
-    .populate("mechs storage client", "name model")
+    .populate("mechs storage client manufacturer", "name price")
+    .sort({ status: -1 })
     .exec();
   console.log(mech_part_instance_data);
-  // res.render("mech_part_instance_list", {
-  //   title: "Mech Part Instance List",
-  //   data: mech_part_instance_data,
-  // });
-  res.send(`NOT IMPLEMENTED: MechPartInstance list`);
+  res.render("mech_part_instance_list", {
+    title: "List of Mech Part Instances",
+    data: mech_part_instance_data,
+  });
 });
 exports.mechpartinstance_detail = asyncHandler(async (req, res, next) => {
   const mech_part_instance_data = await MechPartInstance.findById(req.params.id)
-    .populate("mechs storage client")
+    .populate("mechs storage client manufacturer", "name model price imageURL")
     .exec();
   console.log(mech_part_instance_data);
-  // res.render("mech_part_instance_detail", {
-  //   title: "Mech Part Instance Detail",
-  //   data: mech_part_instance_data,
-  // });
-  res.send(`NOT IMPLEMENTED: MechPartInstance detail ${req.params.id}`);
+  res.render("mech_part_instance_detail", {
+    title: "Mech Part Instance Detail",
+    data: mech_part_instance_data,
+  });
 });
 
 exports.mechpartinstance_create_GET = asyncHandler(async (req, res, next) => {

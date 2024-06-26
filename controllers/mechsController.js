@@ -45,7 +45,7 @@ exports.mechs_detail = asyncHandler(async (req, res, next) => {
     .populate("category")
     .exec();
   console.log(mechs_data);
-  res.render("mechs_detail", { title: "Mech", data: mechs_data });
+  res.render("mechs_detail", { title: "Mech Detail", data: mechs_data });
 });
 
 exports.mechs_create_GET = asyncHandler(async (req, res, next) => {

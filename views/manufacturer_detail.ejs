@@ -16,8 +16,7 @@
       <div class="row">
         <% if (data.length > 0){ %>
         <p>
-          The mech part instances received from <%= manufacturer.name %>
-          include:
+          List of mech part instances delivered by <%= manufacturer.name %>:
         </p>
         <table class="striped centered">
           <thead>
@@ -50,7 +49,9 @@
                 <a href="<%= mech.storage.url %>"><%= mech.storage.name %></a>
               </td>
               <td>
+                <% if (mech.client) { %>
                 <a href="<%= mech.client.url %>"><%= mech.client.name %></a>
+                <% } else { %> - <% } %>
               </td>
               <td><a href="<%= mech.url %>">Link</a></td>
             </tr>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <h1><%= title %></h1>
+      <div class="row">
+        <div class="col s7">
+          <p><strong>Serial No: </strong><%= data.serialNo %></p>
+          <p>
+            <strong>Model: </strong
+            ><a href="<%= data.mechs.url %>"><%= data.mechs.model %></a>
+          </p>
+          <p>
+            <strong>Name: </strong
+            ><a href="<%= data.mechs.url %>"><%= data.mechs.name %></a>
+          </p>
+          <p>
+            <strong>Storage Location: </strong
+            ><a href="<%= data.storage.url %>"><%= data.storage.name %></a>
+          </p>
+          <p>
+            <strong>Manufactured by: </strong
+            ><a href="<%= data.manufacturer.url %>"
+              ><%= data.manufacturer.name %></a
+            >
+          </p>
+          <p>
+            <strong>Status: </strong> <% if (data.status === `Available`) { %>
+            <span class="light-green-text text-darken-1"
+              ><%= data.status %></span
+            >
+            <% } else if (data.status === `Reserved`) { %>
+            <span class="yellow-text text-darken-2"><%= data.status %></span>
+            <% } else { %>
+            <span class="red-text text-darken-1"><%= data.status %></span>
+            <% } %>
+          </p>
+          <p>
+            <strong>Price: </strong><%= data.mechs.price_formatted %> c-bills
+          </p>
+          <p>
+            <strong>Date Received: </strong><%= data.dateReceived_formatted %>
+          </p>
+          <p><strong>Date Sold: </strong><%= data.dateSold_formatted %></p>
+          <% if (data.client){ %>
+          <p>
+            <strong>Sold to: </strong
+            ><a href="<%= data.client.url %>"><%= data.client.name %></a>
+          </p>
+          <% } %>
+        </div>
+        <div class="col s5">
+          <image
+            src="<%= data.mechs.imageURL %>"
+            width="300"
+            style="border: 1px solid black"
+            class="right materialboxed valign-wrapper"
+          />
+        </div>
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $(".materialboxed").materialbox();
+    });
+  </script>
+</html>

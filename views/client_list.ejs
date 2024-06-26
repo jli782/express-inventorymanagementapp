@@ -17,12 +17,12 @@
               <th>Client Details</th>
             </thead>
             <tbody>
+              <% for (let client of data){ %>
               <tr>
-                <% for (let client of data){ %>
                 <td><%= client.name %></td>
                 <td><a href="<%= client.url %>">Link</a></td>
-                <% } %>
               </tr>
+              <% } %>
             </tbody>
           </table>
           <% } else { %>

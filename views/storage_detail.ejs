@@ -10,6 +10,7 @@
     <div class="container">
       <div class="row">
         <h1><%= title %></h1>
+        <p>List of mech part instances stored at <%= title %>.</p>
         <% if (storage_mechs.length > 0){ %>
         <div class="col s12">
           <table class="centered striped">
@@ -37,7 +38,9 @@
                   >
                 </td>
                 <td>
+                  <% if (mech.client) { %>
                   <a href="<%= mech.client.url %>"><%= mech.client.name %></a>
+                  <% } else { %> - <% } %>
                 </td>
                 <td>
                   <% if (mech.status === `Available`) { %>

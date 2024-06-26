@@ -1,48 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %> - <%= client_data.name %></title>
+    <title><%= title %></title>
     <link rel="stylesheet" href="../public/stylesheets/style.css" />
   </head>
   <body>
     <%- include('header'); -%>
     <div class="container">
-      <h1><%= title %></h1>
-      <div class="row">
-        <hr />
-        <div class="col">
-          <p><strong>Name:</strong> <%= client_data.name %></p>
-          <p>
-            <strong>Location:</strong> <%= client_data.address %>
-            &nbsp;&nbsp;&nbsp;&nbsp;<strong>Postal:</strong> <%=
-            client_data.postalCode %>
-          </p>
-          <p>
-            <strong>Email:</strong> <%= client_data.email
-            %>&nbsp;&nbsp;&nbsp;&nbsp;<strong>Phone:</strong> <%=
-            client_data.phone %>
-          </p>
-          <p></p>
-          <p><%= client_data.description %></p>
-        </div>
-      </div>
       <div class="row">
         <div class="col s12">
-          <% if (client_mechs_data.length > 0){ %>
-          <h6>
-            List of Mech Part Instances purchased by <%= client_data.name %>
-          </h6>
-          <br />
+          <h1><%= title %></h1>
+          <p>A list of mech part instances at the shop:</p>
+          <% if (data.length > 0) { %>
           <table class="striped centered">
             <thead>
-              <th>Serial No.</th>
+              <th>Serial No</th>
+              <th>Storage</th>
+              <th>Manufacturer</th>
+              <th>Client</th>
               <th>Status</th>
-              <th>Mech Part Instance Detail</th>
+              <!-- <th>Date Received</th>
+              <th>Date Sold</th> -->
+              <th>Price (c-bills)</th>
+              <th>Mech part instance detail</th>
             </thead>
             <tbody>
-              <% for (let mech of client_mechs_data){ %>
+              <% for (let mech of data){ %>
               <tr>
                 <td><%= mech.serialNo %></td>
+                <td>
+                  <a href="<%= mech.storage.url %>"><%= mech.storage.name %></a>
+                </td>
+                <td>
+                  <a href="<%= mech.manufacturer.url %>"
+                    ><%= mech.manufacturer.name %></a
+                  >
+                </td>
+                <td>
+                  <% if (mech.client) { %>
+                  <a href="<%= mech.client.url %>"><%= mech.client.name %></a>
+                  <% } else { %> - <% } %>
+                </td>
                 <td>
                   <% if (mech.status === `Available`) { %>
                   <span class="light-green-text text-darken-1"
@@ -56,13 +54,16 @@
                   <span class="red-text text-darken-1"><%= mech.status %></span>
                   <% } %>
                 </td>
+                <!-- <td><%= mech.dateReceived_formatted %></td>
+                <td><%= mech.dateSold_formatted %></td> -->
+                <td><%= mech.mechs.price_formatted %></td>
                 <td><a href="<%= mech.url %>">Link</a></td>
               </tr>
               <% } %>
             </tbody>
           </table>
           <% } else { %>
-          <p>Client has not purchased mechs at the shop.</p>
+          <p>There are no mech part instances at the shop.</p>
           <% } %>
         </div>
       </div>
