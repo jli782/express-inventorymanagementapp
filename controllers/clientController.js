@@ -35,7 +35,7 @@ exports.client_create_GET = asyncHandler(async (req, res, next) => {
   res.render("client_form", {
     title: `Create Client`,
     errors: undefined,
-    client: undefined,
+    form_client: undefined,
   });
 });
 
@@ -44,7 +44,9 @@ exports.client_create_POST = [
     .trim()
     .isLength({ min: 3 })
     .escape()
-    .withMessage("Client name must contain at least 3 characters"),
+    .withMessage("Client name must contain at least 3 characters")
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage("Client name has non-alphanumeric characters."),
 
   asyncHandler(async (req, res, next) => {
     const err = validationResult(req);
@@ -62,10 +64,17 @@ exports.client_create_POST = [
       res.render("client_form", {
         title: `Create Client`,
         errors: err.array(),
-        user_input_client: client, //undefined, //client, //
+        form_client: client,
       });
     } else {
-      res.redirect(client.url);
+      const clientExists = await Client.findOne({ name: req.body.name })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
+      if (clientExists) {
+        res.redirect(clientExists.url);
+      } else {
+        res.redirect(client.url);
+      }
     }
   }),
 ];

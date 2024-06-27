@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include('header'); -%>
+
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <form class="col s12" method="POST">
+          <div class="input-field col s4">
+            <input
+              placeholder="Sample Client Name"
+              type="text"
+              class="validate"
+              name="name"
+              id="name"
+              required
+              value="<% if (form_client !== undefined) { %><%= form_client.name %><% } %>"
+            />
+            <label for="name">Client Name</label>
+          </div>
+          <div class="input-field col s4">
+            <input
+              placeholder="Sample Client Location"
+              type="text"
+              class="validate"
+              name="address"
+              id="address"
+              required
+              value="<% if (form_client !== undefined ) { %><%= form_client.address %><% } %>"
+            />
+            <label for="address">Location</label>
+          </div>
+          <div class="input-field col s4">
+            <input
+              placeholder="ex. U2N3P1"
+              type="text"
+              class="validate"
+              name="postalCode"
+              id="postalCode"
+              required
+              value="<% if (form_client !== undefined ) { %><%= form_client.postalCode %><% } %>"
+            />
+            <label for="postalCode">Postal</label>
+          </div>
+          <div class="input-field col s4">
+            <input
+              placeholder="ex. U2N3P1"
+              type="email"
+              class="validate"
+              name="email"
+              id="email"
+              required
+              value="<% if (form_client !== undefined ) { %><%= form_client.email %><% } %>"
+            />
+            <label for="email">Email</label>
+          </div>
+          <div class="input-field col s4">
+            <input
+              placeholder="ex. 5432112345"
+              type="tel"
+              class="validate"
+              name="phone"
+              id="phone"
+              required
+              value="<% if (form_client !== undefined ) { %><%= form_client.phone %><% } %>"
+            />
+            <label for="phone">Phone</label>
+          </div>
+          <div class="input-field col s11">
+            <textarea
+              id="description"
+              name="description"
+              class="materialize-textarea"
+              placeholder="A description of the client goes here."
+              required
+            >
+<% if (form_client !== undefined){ %><%= form_client.description %><% } %></textarea
+            >
+            <label for="description">Client Description</label>
+          </div>
+          <div class="input-field col">
+            <button class="btn waves-effect waves-light" type="submit">
+              Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </form>
+        <% if (errors) { %>
+        <ul>
+          <% for (let error of errors){ %>
+          <li><%= error.msg %></li>
+          <% } %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('footer'); -%>
+  </body>
+</html>
