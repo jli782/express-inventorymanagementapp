@@ -1,6 +1,7 @@
 const Manufacturer = require("../models/manufacturer");
 const MechPartInstance = require("../models/mechpartinstance");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 exports.manufacturer_list = asyncHandler(async (req, res, next) => {
   const manufacturer_list_data = await Manufacturer.find({})
@@ -33,12 +34,62 @@ exports.manufacturer_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.manufacturer_create_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer create GET`);
+  res.render("manufacturer_form", {
+    title: `Create Manufacturer`,
+    manufacturer: undefined,
+    errors: undefined,
+  });
 });
 
-exports.manufacturer_create_POST = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer create POST`);
-});
+exports.manufacturer_create_POST = [
+  body("name")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Manufacturer name must be specified.")
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage("Manufacturer name has non-alphanumeric characters."),
+  body("location")
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .escape()
+    .withMessage("Location must be specified and not be over 50 characters."),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Description must be provided for the manufacturer."),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+
+    const manufacturer = new Manufacturer({
+      name: req.body.name,
+      location: req.body.location,
+      description: req.body.description,
+    });
+    if (!err.isEmpty()) {
+      res.render("manufacturer_form", {
+        title: `Create Manufacturer`,
+        manufacturer: manufacturer,
+        errors: err.array(),
+      });
+      return;
+    } else {
+      const manufacturerExists = await Manufacturer.findOne({
+        name: req.body.name,
+      })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
+
+      if (manufacturerExists) {
+        res.redirect(manufacturerExists.url);
+      } else {
+        await manufacturer.save();
+        res.redirect(manufacturer.url);
+      }
+    }
+  }),
+];
 
 exports.manufacturer_delete_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Manufacturer delete GET`);

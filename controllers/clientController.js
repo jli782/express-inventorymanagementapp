@@ -1,6 +1,7 @@
 const Client = require("../models/client");
 const MechPartInstance = require("../models/mechpartinstance");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 exports.client_list = asyncHandler(async (req, res, next) => {
   const client_list_data = await Client.find({}).sort({ name: 1 }).exec();
@@ -28,16 +29,46 @@ exports.client_detail = asyncHandler(async (req, res, next) => {
     client_data: client,
     client_mechs_data: client_mechs_purchased,
   });
-  // res.send(`NOT IMPLEMENTED: Client detail ${req.params.id}`);
 });
 
 exports.client_create_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Client create GET`);
+  res.render("client_form", {
+    title: `Create Client`,
+    errors: undefined,
+    client: undefined,
+  });
 });
 
-exports.client_create_POST = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Client create POST`);
-});
+exports.client_create_POST = [
+  body("name")
+    .trim()
+    .isLength({ min: 3 })
+    .escape()
+    .withMessage("Client name must contain at least 3 characters"),
+
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+    const client = new Client({
+      name: req.body.name,
+      address: req.body.address,
+      postalCode: req.body.postalCode,
+      email: req.body.email,
+      phone: req.body.phone,
+      description: req.body.description,
+    });
+    if (!err.isEmpty()) {
+      err.array().map((e) => console.log(e));
+      console.log(client);
+      res.render("client_form", {
+        title: `Create Client`,
+        errors: err.array(),
+        user_input_client: client, //undefined, //client, //
+      });
+    } else {
+      res.redirect(client.url);
+    }
+  }),
+];
 
 exports.client_delete_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Client delete GET`);
