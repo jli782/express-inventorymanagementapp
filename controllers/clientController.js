@@ -47,7 +47,32 @@ exports.client_create_POST = [
     .withMessage("Client name must contain at least 3 characters")
     .isAlphanumeric(["en-US"], { ignore: " _-" })
     .withMessage("Client name has non-alphanumeric characters."),
-
+  body("address")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Client location is empty.")
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage("Location has non-alphanumeric characters."),
+  body("postalCode")
+    .trim()
+    .isLength({ min: 6 })
+    .escape()
+    .withMessage("Postal is too short.")
+    .isPostalCode("any")
+    .withMessage("Postal is not valid postal code."),
+  body("email").trim().isEmail().normalizeEmail().withMessage("Email is empty"),
+  body("phone")
+    .trim()
+    .isLength({ min: 10 })
+    .withMessage("Phone no. too short.")
+    .isNumeric()
+    .withMessage("Phone no. has non-numeric characters."),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage(`Description is empty.`)
+    .escape(),
   asyncHandler(async (req, res, next) => {
     const err = validationResult(req);
     const client = new Client({
@@ -73,6 +98,7 @@ exports.client_create_POST = [
       if (clientExists) {
         res.redirect(clientExists.url);
       } else {
+        await client.save();
         res.redirect(client.url);
       }
     }

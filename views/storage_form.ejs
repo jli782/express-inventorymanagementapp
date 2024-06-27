@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <form class="col s12" method="POST">
+          <div class="input-field col s4">
+            <input
+              placeholder="Sample Storage Name"
+              type="text"
+              class="validate"
+              name="name"
+              id="name"
+              required
+              value="<% if (storage !== undefined) { %><%= storage.name %><% } %>"
+            />
+            <label for="name">Storage Name</label>
+          </div>
+          <div class="input-field col">
+            <button class="btn waves-effect waves-light" type="submit">
+              Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </form>
+        <% if (errors) { %>
+        <ul>
+          <% for (let error of errors){ %>
+          <li><%= error.msg %></li>
+          <% } %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('footer'); -%>
+  </body>
+</html>
