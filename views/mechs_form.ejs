@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include('header'); -%>
+
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <form class="col s12" method="POST">
+          <div class="input-field col s3">
+            <input
+              placeholder="Battlemech Name"
+              type="text"
+              class="validate"
+              name="name"
+              id="name"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.name %><% } %>"
+            />
+            <label for="name">Mech Name</label>
+          </div>
+          <div class="input-field col s3">
+            <input
+              placeholder="Battlemech Model"
+              type="text"
+              class="validate"
+              name="model"
+              id="model"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.model %><% } %>"
+            />
+            <label for="model">Mech Model</label>
+          </div>
+          <div class="input-field col s3">
+            <input
+              placeholder="Sample Era"
+              type="text"
+              class="validate"
+              name="era"
+              id="era"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.era %><% } %>"
+            />
+            <label for="era">Mech Era</label>
+          </div>
+          <div class="input-field col s3">
+            <input
+              placeholder="ex. 10"
+              type="number"
+              class="validate"
+              name="weight"
+              id="weight"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.weight %><% } %>"
+            />
+            <label for="weight">Weight</label>
+          </div>
+          <div class="input-field col s3">
+            <input
+              placeholder="ex. 10000"
+              type="number"
+              class="validate"
+              name="price"
+              id="price"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.price %><% } %>"
+            />
+            <label for="price">Price</label>
+          </div>
+          <div class="input-field col s3">
+            <input
+              placeholder="ex. 1000"
+              type="number"
+              class="validate"
+              name="battle_value"
+              id="battle_value"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.battle_value %><% } %>"
+            />
+            <label for="battle_value">Battle Value</label>
+          </div>
+          <div class="input-field col s6">
+            <input
+              placeholder="ex. https://cfw.sarna.net/wiki/images/"
+              type="text"
+              class="validate"
+              name="imageURL"
+              id="imageURL"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.imageURL %><% } %>"
+            />
+            <label for="imageURL">Mech Image URL</label>
+          </div>
+          <div class="input-field col s3">
+            <select required name="tech">
+              <option value="">Select a tech level</option>
+              <% if (mechs !== undefined){ %> <% if (mechs.tech === `Clan`){ %>
+              <!-- list out options but with option Clan selected -->
+              <option value="Clan" selected>Clan</option>
+              <option value="Inner Sphere">Inner Sphere</option>
+              <option value="Star League">Star League</option>
+              <% } else if (mechs.tech === `Inner Sphere`){ %>
+              <!-- list out options but with option IS selected -->
+              <option value="Clan">Clan</option>
+              <option value="Inner Sphere" selected>Inner Sphere</option>
+              <option value="Star League">Star League</option>
+              <% } else { %>
+              <!-- list out options but with option SL selected -->
+              <option value="Clan">Clan</option>
+              <option value="Inner Sphere">Inner Sphere</option>
+              <option value="Star League" selected>Star League</option>
+              <% } %> <% } else { %>
+              <option value="Clan">Clan</option>
+              <option value="Inner Sphere">Inner Sphere</option>
+              <option value="Star League">Star League</option>
+              <% } %>
+            </select>
+            <label for="tech">Tech level</label>
+          </div>
+          <div class="input-field col s9">
+            <input
+              placeholder="ex. 1x AC/20, 1x LRM-20, 1x SRM-6, 4x medium laser"
+              type="text"
+              class="validate"
+              name="equipment"
+              id="equipment"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.equipment.toString() %><% } %>"
+            />
+            <label for="equipment">Armaments</label>
+          </div>
+
+          <div class="input-field col s12">
+            <textarea
+              id="description"
+              name="description"
+              class="materialize-textarea"
+              placeholder="A description of the mech goes here."
+              required
+            >
+<% if (mechs !== undefined){ %><%= mechs.description %><% } %></textarea
+            >
+            <label for="description">Mech Description</label>
+          </div>
+
+          <div class="input-field col">
+            <button class="btn waves-effect waves-light" type="submit">
+              Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </form>
+        <% if (errors) { %>
+        <ul>
+          <% for (let error of errors){ %>
+          <li><%= error.msg %></li>
+          <% } %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('footer'); -%>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $("select").formSelect();
+    });
+  </script>
+</html>
