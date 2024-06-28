@@ -81,11 +81,16 @@ exports.mechs_create_POST = [
     .isURL()
     .withMessage(`ImageURL is invalid.`),
   body("tech", "Tech must not be empty.").trim().isLength({ min: 1 }).escape(),
-  body(`equipment`)
+  body(`equipment`, `Armaments is empty.`)
     .trim()
     .isLength({ min: 1 })
-    .escape()
-    .withMessage(`Armaments is empty.`),
+    .isWhitelisted(
+      "abcdefghijklmnopqrstuvwxyz-QWERTYUIOPASDFGHJKLZXCVBNM 0123456789,"
+    )
+    .withMessage(
+      `Armaments is invalid format. Use a comma-separated list (ie. 1x SRM4, 2x medium laser)`
+    )
+    .escape(),
   body(`description`)
     .trim()
     .isLength({ min: 1 })
@@ -105,7 +110,7 @@ exports.mechs_create_POST = [
     .isInt({
       gt: -1,
     })
-    .withMessage(`Mech Weight is not a positive integer.`),
+    .withMessage(`Price is not a positive integer.`),
   body(`battle_value`)
     .trim()
     .ltrim(`0`)
@@ -141,7 +146,7 @@ exports.mechs_create_POST = [
       imageURL: req.body.imageURL,
       category: mechCategory,
     });
-
+    console.log(mech);
     if (!err.isEmpty()) {
       res.render("mechs_form", {
         title: `Create Mech`,

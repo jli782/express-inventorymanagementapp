@@ -1,5 +1,10 @@
 const MechPartInstance = require("../models/mechpartinstance");
+const Mechs = require("../models/mechs");
+const Storage = require("../models/storage");
+const Client = require("../models/client");
+const Manufacturer = require("../models/manufacturer");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 exports.mechpartinstance_list = asyncHandler(async (req, res, next) => {
   const mech_part_instance_data = await MechPartInstance.find({})
@@ -24,7 +29,24 @@ exports.mechpartinstance_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.mechpartinstance_create_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: MechPartInstance create GET`);
+  const [mechs, storages, clients, manufacturers] = await Promise.all([
+    Mechs.find({}, "model name").sort("weight").exec(),
+    Storage.find({}, "name").sort("name").exec(),
+    Client.find({}, "name").sort("name").exec(),
+    Manufacturer.find({}, "name").sort("name").exec(),
+  ]);
+  console.log(
+    `mechs: ${mechs} \n storages: ${storages} \n clients: ${clients} \n manufacturers: ${manufacturers}`
+  );
+  res.render("mech_part_instance_form", {
+    title: "Create Mech Part Instance",
+    errors: undefined,
+    mech_part_instance: undefined,
+    mechs: mechs,
+    storages: storages,
+    clients: clients,
+    manufacturers: manufacturers,
+  });
 });
 exports.mechpartinstance_create_POST = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: MechPartInstance create POST`);

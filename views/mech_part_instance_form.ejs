@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include('header'); -%>
+
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <form class="col s12" method="POST">
+          <div class="input-field col s3">
+            <select required name="mechs">
+              <option value="" disabled selected>Select a Mech</option>
+              <% for (let mech of mechs){ %> <% if (mech_part_instance !==
+              undefined){ %> <% if (mech_part_instance.mechs._id === mech._id){
+              %>
+              <option selected value="<%= mech._id %>">
+                <%= mech.model %> <%= mech.name %>
+              </option>
+              <% } else { %>
+              <option value="<%= mech._id %>">
+                <%= mech.model %> <%= mech.name %>
+              </option>
+              <% }%> <% } else { %>
+              <option value="<%= mech._id %>">
+                <%= mech.model %> <%= mech.name %>
+              </option>
+              <% } %> <% }%>
+            </select>
+            <label for="mechs">Mech </label>
+          </div>
+          <div class="input-field col s3">
+            <select required name="storage">
+              <option value="" disabled selected>Select a Storage Bay</option>
+              <% for (let storage of storages){ %> <% if (mech_part_instance !==
+              undefined){ %> <% if (mech_part_instance.storage._id ===
+              storage._id){ %>
+              <option selected value="<%= storage._id %>">
+                <%= storage.name %>
+              </option>
+              <% } else { %>
+              <option value="<%= storage._id %>"><%= storage.name %></option>
+              <% }%> <% } else { %>
+              <option value="<%= storage._id %>"><%= storage.name %></option>
+              <% } %> <% }%>
+            </select>
+            <label for="storage">Storage Bay </label>
+          </div>
+          <div class="input-field col s3">
+            <select required name="client">
+              <option value="" disabled selected>Select a Client</option>
+              <% for (let client of clients){ %> <% if (mech_part_instance !==
+              undefined){ %> <% if (mech_part_instance.client._id ===
+              client._id){ %>
+              <option selected value="<%= client._id %>">
+                <%= client.name %>
+              </option>
+              <% } else { %>
+              <option value="<%= client._id %>"><%= client.name %></option>
+              <% }%> <% } else { %>
+              <option value="<%= client._id %>"><%= client.name %></option>
+              <% } %> <% }%>
+            </select>
+            <label for="client">Client </label>
+          </div>
+          <div class="input-field col s3">
+            <select required name="manufacturer">
+              <option value="" disabled selected>Select a Manufacturer</option>
+              <% for (let manufacturer of manufacturers){ %> <% if
+              (mech_part_instance !== undefined){ %> <% if
+              (mech_part_instance.manufacturer._id === manufacturer._id){ %>
+              <option selected value="<%= manufacturer._id %>">
+                <%= manufacturer.name %>
+              </option>
+              <% } else { %>
+              <option value="<%= manufacturer._id %>">
+                <%= manufacturer.name %>
+              </option>
+              <% }%> <% } else { %>
+              <option value="<%= manufacturer._id %>">
+                <%= manufacturer.name %>
+              </option>
+              <% } %> <% }%>
+            </select>
+            <label for="manufacturer">Manufacturer </label>
+          </div>
+          <div class="input-field col s3">
+            <input
+              placeholder="input a 15-digit serial no."
+              type="number"
+              class="validate"
+              name="serialNo"
+              id="serialNo"
+              required
+              value="<% if (mech_part_instance !== undefined) { %><%= mech_part_instance.serialNo %><% } %>"
+            />
+            <label for="serialNo">Serial No.</label>
+          </div>
+          <div class="col s3">
+            <label for="dateReceived">Date Received</label>
+            <input
+              type="text"
+              class="datepicker"
+              name="dateReceived"
+              placeholder="Date Received"
+              required
+            />
+          </div>
+          <div class="col s3">
+            <label for="dateReceived">Date Sold</label>
+            <input
+              type="text"
+              class="datepicker"
+              name="dateSold"
+              placeholder="Date Sold"
+            />
+          </div>
+          <div class="input-field col s3">
+            <select>
+              <option value="" disabled selected>Select a status</option>
+              <% if (mech_part_instance !== undefined){ %> <% if
+              (mech_part_instance.status === `Available`){ %>
+              <option selected value="Available">Available</option>
+              <option value="Reserved">Reserved</option>
+              <option value="Sold">Sold</option>
+              <% } else if (mech_part_instance.status === `Reserved`){ %>
+              <option value="Available">Available</option>
+              <option selected value="Reserved">Reserved</option>
+              <option value="Sold">Sold</option>
+              <% } else { %>
+              <option value="Available">Available</option>
+              <option value="Reserved">Reserved</option>
+              <option selected value="Sold">Sold</option>
+              <% } %> <% } else { %>
+              <option value="Available">Available</option>
+              <option value="Reserved">Reserved</option>
+              <option value="Sold">Sold</option>
+              <% } %>
+            </select>
+            <label>Materialize Select</label>
+          </div>
+
+          <div class="input-field col">
+            <button class="btn waves-effect waves-light" type="submit">
+              Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </form>
+        <% if (errors) { %>
+        <ul>
+          <% for (let error of errors){ %>
+          <li><%= error.msg %></li>
+          <% } %>
+        </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('footer'); -%>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $("select").formSelect();
+      $(".datepicker").datepicker();
+    });
+  </script>
+</html>
