@@ -55,7 +55,7 @@ router.get(
 router.get("/storage/create", storage_controller.storage_create_GET);
 router.post("/storage/create", storage_controller.storage_create_POST);
 router.get("/storage/delete/:id", storage_controller.storage_delete_GET);
-router.delete("/storage/delete/:id", storage_controller.storage_delete_DELETE);
+router.post("/storage/delete/:id", storage_controller.storage_delete_DELETE);
 router.get("/storage/update/:id", storage_controller.storage_update_GET);
 router.put("/storage/update/:id", storage_controller.storage_update_PUT);
 router.get("/storages", storage_controller.storage_list);
