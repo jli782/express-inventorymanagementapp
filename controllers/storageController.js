@@ -34,6 +34,7 @@ exports.storage_detail = asyncHandler(async (req, res, next) => {
 
   res.render("storage_detail", {
     title: storage.name,
+    storage: storage,
     storage_mechs: storage_mechs_data,
   });
 
@@ -79,10 +80,52 @@ exports.storage_create_POST = [
 ];
 
 exports.storage_delete_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Storage delete GET`);
+  const [storage, storage_mechs_data] = await Promise.all([
+    Storage.findById(req.params.id).exec(),
+    MechPartInstance.find({
+      storage: req.params.id,
+    })
+      .populate("mechs client manufacturer")
+      .sort({ name: 1 })
+      .exec(),
+  ]);
+  console.log(`storage: `, storage);
+  console.log(`stored mechs: `, storage_mechs_data);
+
+  if (!storage) {
+    res.redirect(`/storages`);
+    return;
+  }
+  res.render("storage_delete", {
+    title: `Delete Storage`,
+    storage: storage,
+    storage_mechs: storage_mechs_data,
+  });
 });
 exports.storage_delete_DELETE = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Storage delete DELETE`);
+  const [storage, storage_mechs_data] = await Promise.all([
+    Storage.findById(req.params.id).exec(),
+    MechPartInstance.find({
+      storage: req.params.id,
+    })
+      .populate("mechs client manufacturer")
+      .sort({ name: 1 })
+      .exec(),
+  ]);
+  console.log(`storage: `, storage);
+  console.log(`stored mechs: `, storage_mechs_data);
+  console.log(`req.body.storage_id: `);
+  if (storage_mechs_data.length > 0) {
+    res.render("storage_delete", {
+      title: `Delete Storage`,
+      storage: storage,
+      storage_mechs: storage_mechs_data,
+    });
+    return;
+  } else {
+    await Storage.findByIdAndDelete(req.body.storage_id);
+    res.redirect("/shopwiki/storages");
+  }
 });
 
 exports.storage_update_GET = asyncHandler(async (req, res, next) => {

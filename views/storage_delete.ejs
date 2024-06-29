@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <div class="row">
+        <h1><%= title %> (<%= storage.name %>)</h1>
+        <% if (storage_mechs.length > 0){ %>
+        <p>
+          Delete the following before attempting to delete <%= storage.name %>
+        </p>
+        <table class="centered striped">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Serial No.</th>
+              <th>Manufacturer(s)</th>
+              <th>Client</th>
+              <th>Status</th>
+              <th>Price (c-bills)</th>
+              <th>Date Received</th>
+              <th>Date Sold</th>
+              <th>Instance Details Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let mech of storage_mechs) { %>
+            <tr>
+              <td><%= mech.mechs.model %></td>
+              <td><%= mech.serialNo %></td>
+              <td>
+                <a href="<%= mech.manufacturer.url %>"
+                  ><%= mech.manufacturer.name %></a
+                >
+              </td>
+              <td>
+                <% if (mech.client) { %>
+                <a href="<%= mech.client.url %>"><%= mech.client.name %></a>
+                <% } else { %> - <% } %>
+              </td>
+              <td>
+                <% if (mech.status === `Available`) { %>
+                <span class="light-green-text text-darken-1"
+                  ><%= mech.status %></span
+                >
+                <% } else if (mech.status === `Reserved`) { %>
+                <span class="yellow-text text-darken-2"
+                  ><%= mech.status %></span
+                >
+                <% } else { %>
+                <span class="red-text text-darken-1"><%= mech.status %></span>
+                <% } %>
+              </td>
+              <td><%= mech.mechs.price_formatted %></td>
+              <td><%= mech.dateReceived_formatted %></td>
+              <td><%= mech.dateSold_formatted %></td>
+              <td><a href="<%= mech.url %>">Explore</a></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p>Do you really want to delete <%= storage.name %>?</p>
+        <form method="POST">
+          <div class="input-field">
+            <input
+              id="storage_id"
+              name="storage_id"
+              type="hidden"
+              value="<%= storage._id %>"
+            />
+          </div>
+          <button
+            class="btn waves-effect waves-light"
+            type="submit"
+            name="action"
+          >
+            Delete
+            <i class="material-icons right">send</i>
+          </button>
+        </form>
+        <% } %>
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+</html>
