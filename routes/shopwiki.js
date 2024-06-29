@@ -31,7 +31,7 @@ router.get(
   "/mechpartinstance/delete/:id",
   mech_part_instance_controller.mechpartinstance_delete_GET
 );
-router.delete(
+router.post(
   "/mechpartinstance/delete/:id",
   mech_part_instance_controller.mechpartinstance_delete_DELETE
 );
