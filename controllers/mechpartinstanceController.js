@@ -144,11 +144,41 @@ exports.mechpartinstance_create_POST = [
 ];
 
 exports.mechpartinstance_delete_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: MechPartInstance delete GET`);
+  const mech_part_instance_data = await MechPartInstance.findById(req.params.id)
+    .populate("mechs storage client manufacturer", "name model price imageURL")
+    .exec();
+  console.log(mech_part_instance_data);
+
+  if (!mech_part_instance_data) {
+    res.redirect("/shopwiki/mechpartinstances");
+    return;
+  }
+  res.render("mech_part_instance_delete", {
+    title: "Delete Mech Part Instance",
+    data: mech_part_instance_data,
+  });
 });
 exports.mechpartinstance_delete_DELETE = asyncHandler(
   async (req, res, next) => {
-    res.send(`NOT IMPLEMENTED: MechPartInstance delete DELETE`);
+    const mech_part_instance_data = await MechPartInstance.findById(
+      req.params.id
+    )
+      .populate(
+        "mechs storage client manufacturer",
+        "name model price imageURL"
+      )
+      .exec();
+    console.log(mech_part_instance_data);
+
+    if (!mech_part_instance_data) {
+      res.redirect("/shopwiki/mechpartinstances");
+      return;
+    } else {
+      await MechPartInstance.findByIdAndDelete(
+        req.body.mechpartinstance_id
+      ).exec();
+      res.redirect("/shopwiki/mechpartinstances");
+    }
   }
 );
 
