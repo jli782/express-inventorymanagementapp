@@ -27,6 +27,9 @@ exports.category_detail = asyncHandler(async (req, res, next) => {
   res.render("category_detail", {
     title: `Category Detail`,
     data: category_detail_data,
+    category_description: category_detail_data.description
+      .replaceAll("&quot;", '"')
+      .replaceAll("&#x27;", "'"),
     mech_list_data: mech_list_by_category,
   });
 });
@@ -98,11 +101,45 @@ exports.category_create_POST = [
 ];
 
 exports.category_delete_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Category delete GET`);
+  const category_detail_data = await Category.findById(req.params.id).exec();
+
+  const mech_list_by_category = await Mechs.find({}, "name model")
+    .where("weight")
+    .gte(category_detail_data.weightMin)
+    .lte(category_detail_data.weightMax)
+    .exec();
+
+  console.log(category_detail_data, mech_list_by_category);
+  if (!category_detail_data) {
+    res.redirect("/shopwiki/categories");
+    return;
+  }
+  res.render("category_delete", {
+    title: `Delete Category`,
+    data: category_detail_data,
+    mech_list_data: mech_list_by_category,
+  });
 });
 
 exports.category_delete_DELETE = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Category delete DELETE`);
+  const category_detail_data = await Category.findById(req.params.id).exec();
+  const mech_list_by_category = await Mechs.find({}, "name model")
+    .where("weight")
+    .gte(category_detail_data.weightMin)
+    .lte(category_detail_data.weightMax)
+    .exec();
+
+  console.log(category_detail_data, mech_list_by_category);
+  if (mech_list_by_category.length > 0) {
+    res.render("category_delete", {
+      title: `Delete Category`,
+      data: category_detail_data,
+      mech_list_data: mech_list_by_category,
+    });
+  } else {
+    await Category.findByIdAndDelete(req.body.category_id).exec();
+    res.redirect("/shopwiki/categories");
+  }
 });
 
 exports.category_update_GET = asyncHandler(async (req, res, next) => {

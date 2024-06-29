@@ -64,10 +64,7 @@ router.get("/storage/:id", storage_controller.storage_detail);
 router.get("/category/create", category_controller.category_create_GET);
 router.post("/category/create", category_controller.category_create_POST);
 router.get("/category/delete/:id", category_controller.category_delete_GET);
-router.delete(
-  "/category/delete/:id",
-  category_controller.category_delete_DELETE
-);
+router.post("/category/delete/:id", category_controller.category_delete_DELETE);
 router.get("/category/update/:id", category_controller.category_update_GET);
 router.put("/category/update/:id", category_controller.category_update_PUT);
 router.get("/categories", category_controller.category_list);
