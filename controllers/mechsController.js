@@ -80,7 +80,13 @@ exports.mechs_create_POST = [
     .isLength({ min: 1 })
     .isURL()
     .withMessage(`ImageURL is invalid.`),
-  body("tech", "Tech must not be empty.").trim().isLength({ min: 1 }).escape(),
+  body("tech", "Tech level must not be empty.")
+    .trim()
+    .escape()
+    .custom((tech) => {
+      console.log(`tech: `, tech.length);
+      return tech.length !== 0;
+    }),
   body(`equipment`, `Armaments is empty.`)
     .trim()
     .isLength({ min: 1 })
