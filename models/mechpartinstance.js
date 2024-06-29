@@ -28,6 +28,7 @@ MechPartInstanceSchema.virtual("url").get(function () {
 });
 
 MechPartInstanceSchema.virtual("dateReceived_formatted").get(function () {
+  // DateTime.fromJSDate(this.dateReceived).toLocaleString(DateTime.DATE_MED)
   return this.dateReceived
     ? this.dateReceived.toLocaleDateString(DateTime.DATETIME_MED)
     : `???`;
@@ -36,6 +37,6 @@ MechPartInstanceSchema.virtual("dateReceived_formatted").get(function () {
 MechPartInstanceSchema.virtual("dateSold_formatted").get(function () {
   return this.dateSold
     ? this.dateSold.toLocaleDateString(DateTime.DATETIME_MED)
-    : `???`;
+    : ``;
 });
 module.exports = mongoose.model("MechPartInstance", MechPartInstanceSchema);

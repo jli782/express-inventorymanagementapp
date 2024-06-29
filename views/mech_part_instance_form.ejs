@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="../public/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title><%= title %></title>
   </head>
   <body>
@@ -12,13 +12,14 @@
         <h1><%= title %></h1>
         <form class="col s12" method="POST">
           <div class="input-field col s3">
-            <select required name="mechs">
+            <select name="mechs">
               <option value="" disabled selected>Select a Mech</option>
               <% for (let mech of mechs){ %> <% if (mech_part_instance !==
-              undefined){ %> <% if (mech_part_instance.mechs._id === mech._id){
+              undefined && mech_part_instance.mechs){ %> <% if
+              (mech_part_instance.mechs._id.toString() === mech._id.toString()){
               %>
               <option selected value="<%= mech._id %>">
-                <%= mech.model %> <%= mech.name %>
+                <%= mech.model %>
               </option>
               <% } else { %>
               <option value="<%= mech._id %>">
@@ -33,11 +34,12 @@
             <label for="mechs">Mech </label>
           </div>
           <div class="input-field col s3">
-            <select required name="storage">
+            <select name="storage">
               <option value="" disabled selected>Select a Storage Bay</option>
               <% for (let storage of storages){ %> <% if (mech_part_instance !==
-              undefined){ %> <% if (mech_part_instance.storage._id ===
-              storage._id){ %>
+              undefined && mech_part_instance.storage){ %> <% if
+              (mech_part_instance.storage._id.toString() ===
+              storage._id.toString()){ %>
               <option selected value="<%= storage._id %>">
                 <%= storage.name %>
               </option>
@@ -50,28 +52,13 @@
             <label for="storage">Storage Bay </label>
           </div>
           <div class="input-field col s3">
-            <select required name="client">
-              <option value="" disabled selected>Select a Client</option>
-              <% for (let client of clients){ %> <% if (mech_part_instance !==
-              undefined){ %> <% if (mech_part_instance.client._id ===
-              client._id){ %>
-              <option selected value="<%= client._id %>">
-                <%= client.name %>
-              </option>
-              <% } else { %>
-              <option value="<%= client._id %>"><%= client.name %></option>
-              <% }%> <% } else { %>
-              <option value="<%= client._id %>"><%= client.name %></option>
-              <% } %> <% }%>
-            </select>
-            <label for="client">Client </label>
-          </div>
-          <div class="input-field col s3">
-            <select required name="manufacturer">
+            <select name="manufacturer">
               <option value="" disabled selected>Select a Manufacturer</option>
               <% for (let manufacturer of manufacturers){ %> <% if
-              (mech_part_instance !== undefined){ %> <% if
-              (mech_part_instance.manufacturer._id === manufacturer._id){ %>
+              (mech_part_instance !== undefined &&
+              mech_part_instance.manufacturer){ %> <% if
+              (mech_part_instance.manufacturer._id.toString() ===
+              manufacturer._id.toString()){ %>
               <option selected value="<%= manufacturer._id %>">
                 <%= manufacturer.name %>
               </option>
@@ -88,9 +75,28 @@
             <label for="manufacturer">Manufacturer </label>
           </div>
           <div class="input-field col s3">
+            <select name="client">
+              <option value="" disabled selected>Select a Client</option>
+              <% for (let client of clients){ %> <% if (mech_part_instance !==
+              undefined && mech_part_instance.client){ %> <% if
+              (mech_part_instance.client._id.toString() ===
+              client._id.toString()){ %>
+              <option selected value="<%= client._id %>">
+                <%= client.name %>
+              </option>
+              <% } else { %>
+              <option value="<%= client._id %>"><%= client.name %></option>
+              <% }%> <% } else { %>
+              <option value="<%= client._id %>"><%= client.name %></option>
+              <% } %> <% }%>
+            </select>
+            <label for="client">Client </label>
+          </div>
+
+          <div class="input-field col s3">
             <input
               placeholder="input a 15-digit serial no."
-              type="number"
+              type="text"
               class="validate"
               name="serialNo"
               id="serialNo"
@@ -103,23 +109,28 @@
             <label for="dateReceived">Date Received</label>
             <input
               type="text"
-              class="datepicker"
               name="dateReceived"
+              id="dateReceived"
+              class="datepicker"
               placeholder="Date Received"
               required
+              value="<% if (mech_part_instance != undefined){ %><%= mech_part_instance.dateReceived_formatted %><% } %>"
             />
           </div>
           <div class="col s3">
             <label for="dateReceived">Date Sold</label>
             <input
               type="text"
-              class="datepicker"
               name="dateSold"
+              id="dateSold"
+              class="datepicker"
               placeholder="Date Sold"
+              disabled
+              value="<% if (mech_part_instance != undefined){ %><%= mech_part_instance.dateSold_formatted %><% } %>"
             />
           </div>
           <div class="input-field col s3">
-            <select>
+            <select required name="status" id="status_select">
               <option value="" disabled selected>Select a status</option>
               <% if (mech_part_instance !== undefined){ %> <% if
               (mech_part_instance.status === `Available`){ %>
@@ -140,7 +151,7 @@
               <option value="Sold">Sold</option>
               <% } %>
             </select>
-            <label>Materialize Select</label>
+            <label for="status">Status</label>
           </div>
 
           <div class="input-field col">
@@ -165,7 +176,20 @@
   <script>
     $(document).ready(function () {
       $("select").formSelect();
-      $(".datepicker").datepicker();
+      $(".datepicker").datepicker({ format: "m/d/yyyy" });
+      $("#status_select").on("change", function (event) {
+        console.log($("#status_select").val());
+        if ($("#status_select").val() != `Available`) {
+          $("#dateSold").prop("disabled", false);
+          $(".datepicker").prop("required", true);
+        } else {
+          $("#dateSold").prop("disabled", true);
+        }
+      });
+      if ($("#status_select").val() != `Available`) {
+        $("#dateSold").prop("disabled", false);
+        $(".datepicker").prop("required", true);
+      }
     });
   </script>
 </html>
