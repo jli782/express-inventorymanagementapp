@@ -46,7 +46,10 @@
           <p>
             <strong>Date Received: </strong><%= data.dateReceived_formatted %>
           </p>
-          <p><strong>Date Sold: </strong><%= data.dateSold_formatted %></p>
+          <p>
+            <strong>Date Sold: </strong><% if (data.dateSold_formatted === ''){
+            %>N/A<% } else { %><%= data.dateSold_formatted %><% } %>
+          </p>
           <% if (data.client){ %>
           <p>
             <strong>Sold to: </strong
