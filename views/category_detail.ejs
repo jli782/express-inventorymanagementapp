@@ -9,13 +9,18 @@
     <div class="container">
       <div class="row">
         <h1><%= title %>: <%= data.name %></h1>
+        <div class="col s6">
+          <a href="delete/<%= data._id %>" class="waves-effect waves-light btn"
+            ><i class="material-icons right">delete</i>Delete</a
+          >
+        </div>
         <div class="col">
           <h5>
             <strong>Weight Range: </strong> <%= data.weightMin %> - <%=
             data.weightMax %> tons
           </h5>
           <br />
-          <p><%= data.description %></p>
+          <p><%= category_description %></p>
         </div>
         <div class="row">
           <div class="col s12">
