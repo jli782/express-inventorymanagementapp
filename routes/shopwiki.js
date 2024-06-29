@@ -94,7 +94,7 @@ router.get(
   "/manufacturer/delete/:id",
   manufacturer_controller.manufacturer_delete_GET
 );
-router.delete(
+router.post(
   "/manufacturer/delete/:id",
   manufacturer_controller.manufacturer_delete_DELETE
 );

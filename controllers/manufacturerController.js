@@ -92,11 +92,47 @@ exports.manufacturer_create_POST = [
 ];
 
 exports.manufacturer_delete_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer delete GET`);
+  const [manufacturer_data, manufacturer_mechs_data] = await Promise.all([
+    Manufacturer.findById(req.params.id).exec(),
+    MechPartInstance.find({
+      manufacturer: req.params.id,
+    })
+      .populate("storage client mechs")
+      .exec(),
+  ]);
+
+  console.log(manufacturer_data, manufacturer_mechs_data);
+  if (!manufacturer_data) {
+    res.redirect("/shopwiki/manufacturers");
+  }
+  res.render("manufacturer_delete", {
+    title: `Delete Manufacturer`,
+    manufacturer: manufacturer_data,
+    data: manufacturer_mechs_data,
+  });
 });
 
 exports.manufacturer_delete_DELETE = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer delete DELETE`);
+  const [manufacturer_data, manufacturer_mechs_data] = await Promise.all([
+    Manufacturer.findById(req.params.id).exec(),
+    MechPartInstance.find({
+      manufacturer: req.params.id,
+    })
+      .populate("storage client mechs")
+      .exec(),
+  ]);
+  console.log(`req.body.manufacturer_id : ${req.body.manufacturer_id}`);
+  console.log(manufacturer_data, manufacturer_mechs_data);
+  if (manufacturer_mechs_data.length > 0) {
+    res.render("manufacturer_delete", {
+      title: `Delete Manufacturer`,
+      manufacturer: manufacturer_data,
+      data: manufacturer_mechs_data,
+    });
+  } else {
+    await Manufacturer.findByIdAndDelete(req.body.manufacturer_id);
+    res.redirect("/shopwiki/manufacturers");
+  }
 });
 
 exports.manufacturer_update_GET = asyncHandler(async (req, res, next) => {

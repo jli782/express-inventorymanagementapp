@@ -9,19 +9,10 @@
     <div class="container">
       <div class="row s12">
         <h1><%= title %></h1>
-        <a
-          href="delete/<%= manufacturer._id %>"
-          class="waves-effect waves-light btn blue-grey lighten-1"
-          ><i class="material-icons left">delete</i>Delete</a
-        >
-        <h3><%= manufacturer.name %></h3>
-        <p><strong>Location: </strong> <%= manufacturer.location %></p>
-        <p><%= manufacturer.description %></p>
-      </div>
-      <div class="row">
         <% if (data.length > 0){ %>
         <p>
-          List of mech part instances delivered by <%= manufacturer.name %>:
+          Delete the following mech part instances before attempting to delete
+          <%= manufacturer.name %>
         </p>
         <table class="striped centered">
           <thead>
@@ -64,9 +55,26 @@
           </tbody>
         </table>
         <% } else { %>
-        <p>
-          There are no mechs supplied by <%= manufacturer.name %> to the shop.
-        </p>
+        <p>Do you really want to delete <%= manufacturer.name %>?</p>
+        <form method="POST">
+          <div class="input-field">
+            <input
+              id="manufacturer_id"
+              name="manufacturer_id"
+              type="hidden"
+              value="<%= manufacturer._id %>"
+            />
+          </div>
+          <button
+            class="btn waves-effect waves-light"
+            type="submit"
+            name="action"
+          >
+            Delete
+            <i class="material-icons right">send</i>
+          </button>
+        </form>
+
         <% } %>
       </div>
     </div>
