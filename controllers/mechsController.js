@@ -45,8 +45,19 @@ exports.mechs_detail = asyncHandler(async (req, res, next) => {
   const mechs_data = await Mechs.findById(req.params.id)
     .populate("category")
     .exec();
-  console.log(mechs_data);
-  res.render("mechs_detail", { title: "Mech Detail", data: mechs_data });
+  console.log(
+    mechs_data,
+    `description: ${mechs_data.description
+      .replaceAll("&#x27;", "'")
+      .replaceAll("&#x2F;", "/")}`
+  );
+  res.render("mechs_detail", {
+    title: "Mech Detail",
+    data: mechs_data,
+    formatted_description: mechs_data.description
+      .replaceAll("&#x27;", "'")
+      .replaceAll("&#x2F;", "/"),
+  });
 });
 
 exports.mechs_create_GET = asyncHandler(async (req, res, next) => {
@@ -91,12 +102,11 @@ exports.mechs_create_POST = [
     .trim()
     .isLength({ min: 1 })
     .isWhitelisted(
-      "abcdefghijklmnopqrstuvwxyz-QWERTYUIOPASDFGHJKLZXCVBNM 0123456789,"
+      "abcdefghijklmnopqrstuvwxyz-QWERTYUIOPASDFGHJKLZXCVBNM 0123456789,/"
     )
     .withMessage(
       `Armaments is invalid format. Use a comma-separated list (ie. 1x SRM4, 2x medium laser)`
-    )
-    .escape(),
+    ),
   body(`description`)
     .trim()
     .isLength({ min: 1 })
@@ -176,10 +186,52 @@ exports.mechs_create_POST = [
 ];
 
 exports.mechs_delete_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Mechs delete GET`);
+  const [mechs_data, mech_part_instances] = await Promise.all([
+    Mechs.findById(req.params.id).populate("category").exec(),
+    MechPartInstance.find({
+      mechs: req.params.id,
+    })
+      .sort({ status: 1 })
+      .exec(),
+  ]);
+
+  console.log(
+    `mechs_data ${mechs_data} | mech_part_instances ${mech_part_instances}`
+  );
+  if (!mechs_data) {
+    res.redirect("/shopwiki/mechs");
+    return;
+  }
+  res.render("mechs_delete", {
+    title: "Delete Mech",
+    data: mechs_data,
+    mech_part_instances: mech_part_instances,
+  });
 });
 exports.mechs_delete_DELETE = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Mechs delete DELETE`);
+  const [mechs_data, mech_part_instances] = await Promise.all([
+    Mechs.findById(req.params.id).populate("category").exec(),
+    MechPartInstance.find({
+      mechs: req.params.id,
+    })
+      .sort({ status: 1 })
+      .exec(),
+  ]);
+
+  console.log(
+    `mechs_data ${mechs_data} | mech_part_instances ${mech_part_instances} | req.body.mechs_id ${req.body.mechs_id}`
+  );
+  if (mech_part_instances.length > 0) {
+    res.render("mechs_delete", {
+      title: "Delete Mech",
+      data: mechs_data,
+      mech_part_instances: mech_part_instances,
+    });
+    return;
+  } else {
+    await Mechs.findByIdAndDelete(req.body.mechs_id).exec();
+    res.redirect("/shopwiki/mechs");
+  }
 });
 
 exports.mechs_update_GET = asyncHandler(async (req, res, next) => {

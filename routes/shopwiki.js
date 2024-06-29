@@ -13,7 +13,7 @@ router.get("/", mechs_controller.index);
 router.get("/mechs/create", mechs_controller.mechs_create_GET);
 router.post("/mechs/create", mechs_controller.mechs_create_POST);
 router.get("/mechs/delete/:id", mechs_controller.mechs_delete_GET);
-router.delete("/mechs/delete/:id", mechs_controller.mechs_delete_DELETE);
+router.post("/mechs/delete/:id", mechs_controller.mechs_delete_DELETE);
 router.get("/mechs/update/:id", mechs_controller.mechs_update_GET);
 router.put("/mechs/update/:id", mechs_controller.mechs_update_UPDATE);
 router.get("/mechs", mechs_controller.mechs_list);

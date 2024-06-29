@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= data.model %>&nbsp;&nbsp;-&nbsp;&nbsp;<%= data.name %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('header'); -%>
+    <div class="container">
+      <div class="row">
+        <h1><%= title %></h1>
+        <% if (mech_part_instances.length > 0){ %>
+        <p>
+          Delete the following mech part instances before attempting to delete
+          <%= data.model %> - <%= data.name %>
+        </p>
+        <table class="striped centered">
+          <thead>
+            <th>Serial No</th>
+            <th>Status</th>
+            <!-- <th>Date Received</th>
+                  <th>Date Sold</th> -->
+            <th>Mech part instance detail</th>
+          </thead>
+          <tbody>
+            <% for (let mech of mech_part_instances){ %>
+            <tr>
+              <td><%= mech.serialNo %></td>
+              <td>
+                <% if (mech.status === `Available`) { %>
+                <span class="light-green-text text-darken-1"
+                  ><%= mech.status %></span
+                >
+                <% } else if (mech.status === `Reserved`) { %>
+                <span class="yellow-text text-darken-2"
+                  ><%= mech.status %></span
+                >
+                <% } else { %>
+                <span class="red-text text-darken-1"><%= mech.status %></span>
+                <% } %>
+              </td>
+              <!-- <td><%= mech.dateReceived_formatted %></td>
+                    <td><%= mech.dateSold_formatted %></td> -->
+              <td><a href="<%= mech.url %>">Link</a></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p>
+          Do you really want to delete <%= data.model %> - <%= data.name %>?
+        </p>
+        <form method="POST">
+          <div class="input-field">
+            <input
+              id="mechs_id"
+              name="mechs_id"
+              type="hidden"
+              value="<%= data._id %>"
+            />
+          </div>
+          <button
+            class="btn waves-effect waves-light"
+            type="submit"
+            name="action"
+          >
+            Delete
+            <i class="material-icons right">send</i>
+          </button>
+        </form>
+        <% } %>
+        <!-- <div class="col s4">
+          <image
+            src="<%= data.imageURL %>"
+            width="300"
+            style="border: 1px solid black; margin-top: 4rem"
+            class="right materialboxed valign-wrapper"
+          />
+        </div> -->
+      </div>
+    </div>
+    <%- include('footer'); -%>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $(".materialboxed").materialbox();
+    });
+  </script>
+</html>
