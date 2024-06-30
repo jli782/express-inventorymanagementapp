@@ -50,10 +50,10 @@ exports.client_create_POST = [
   body("address")
     .trim()
     .isLength({ min: 1 })
-    .escape()
     .withMessage("Client location is empty.")
-    .isAlphanumeric(["en-US"], { ignore: " _-" })
-    .withMessage("Location has non-alphanumeric characters."),
+    .isAlphanumeric(["en-US"], { ignore: " _-'" })
+    .withMessage("Location has non-alphanumeric characters.")
+    .escape(),
   body("postalCode")
     .trim()
     .isLength({ min: 6 })
@@ -77,7 +77,7 @@ exports.client_create_POST = [
     const err = validationResult(req);
     const client = new Client({
       name: req.body.name,
-      address: req.body.address,
+      address: req.body.address.replace("&#x27;", "'"),
       postalCode: req.body.postalCode,
       email: req.body.email,
       phone: req.body.phone,
