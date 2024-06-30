@@ -145,6 +145,6 @@ exports.manufacturer_update_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Manufacturer update GET`);
 });
 
-exports.manufacturer_update_PUT = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer update PUT`);
+exports.manufacturer_update_POST = asyncHandler(async (req, res, next) => {
+  res.send(`NOT IMPLEMENTED: Manufacturer update POST`);
 });

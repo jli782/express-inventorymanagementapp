@@ -185,6 +185,6 @@ exports.mechpartinstance_delete_DELETE = asyncHandler(
 exports.mechpartinstance_update_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: MechPartInstance update GET`);
 });
-exports.mechpartinstance_update_PUT = asyncHandler(async (req, res, next) => {
+exports.mechpartinstance_update_POST = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: MechPartInstance update PUT`);
 });

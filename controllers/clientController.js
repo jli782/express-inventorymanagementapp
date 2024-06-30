@@ -151,6 +151,6 @@ exports.client_update_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Client update GET`);
 });
 
-exports.client_update_PUT = asyncHandler(async (req, res, next) => {
+exports.client_update_POST = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Client update PUT`);
 });

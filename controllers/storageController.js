@@ -129,8 +129,48 @@ exports.storage_delete_DELETE = asyncHandler(async (req, res, next) => {
 });
 
 exports.storage_update_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Storage update GET`);
+  const storage_data = await Storage.findById(req.params.id).exec();
+  const storages = await Storage.find().sort({ name: 1 }).exec();
+
+  if (!storage_data) {
+    const err = new Error("Storage not found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("storage_form", {
+    title: `Update Storage`,
+    errors: undefined,
+    storage: storage_data,
+    storages: storages,
+  });
 });
-exports.storage_update_PUT = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Storage update PUT`);
-});
+exports.storage_update_POST = [
+  body("name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Storage is empty")
+    .escape(),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+
+    const storage = new Storage({ name: req.body.name, _id: req.params.id });
+    if (!err.isEmpty()) {
+      err.array().map((e) => console.log(e.msg));
+      const storages = await Storage.find().sort({ name: 1 }).exec();
+
+      res.render("storage_form", {
+        title: `Update Storage`,
+        errors: err.array(),
+        storage: storage,
+        storages: storages,
+      });
+    } else {
+      const updatedStorage = await Storage.findOneAndUpdate(
+        { _id: req.params.id },
+        storage,
+        {}
+      ).exec();
+      res.redirect(updatedStorage.url);
+    }
+  }),
+];

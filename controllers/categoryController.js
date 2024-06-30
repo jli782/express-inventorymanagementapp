@@ -146,6 +146,6 @@ exports.category_update_GET = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Category update GET`);
 });
 
-exports.category_update_PUT = asyncHandler(async (req, res, next) => {
+exports.category_update_POST = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Category update PUT`);
 });
