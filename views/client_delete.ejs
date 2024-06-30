@@ -8,37 +8,14 @@
     <%- include('header'); -%>
     <div class="container">
       <h1><%= title %></h1>
-      <div class="col s6">
-        <a
-          href="delete/<%= client_data._id %>"
-          class="waves-effect waves-light btn"
-          ><i class="material-icons right">delete</i>Delete</a
-        >
-      </div>
-      <div class="row">
-        <hr />
-        <div class="col">
-          <p><strong>Name:</strong> <%= client_data.name %></p>
-          <p>
-            <strong>Location:</strong> <%= client_data.address %>
-            &nbsp;&nbsp;&nbsp;&nbsp;<strong>Postal:</strong> <%=
-            client_data.postalCode %>
-          </p>
-          <p>
-            <strong>Email:</strong> <%= client_data.email
-            %>&nbsp;&nbsp;&nbsp;&nbsp;<strong>Phone:</strong> <%=
-            client_data.phone %>
-          </p>
-          <p></p>
-          <p><%= client_data.description %></p>
-        </div>
-      </div>
+
       <div class="row">
         <div class="col s12">
           <% if (client_mechs_data.length > 0){ %>
-          <h6>
-            List of Mech Part Instances purchased by <%= client_data.name %>
-          </h6>
+          <p>
+            Delete the following list of Mech Part Instances before attempting
+            to delete <strong>"<%= client_data.name %>"</strong>
+          </p>
           <br />
           <table class="striped centered">
             <thead>
@@ -69,7 +46,28 @@
             </tbody>
           </table>
           <% } else { %>
-          <p>Client has not purchased mechs at the shop.</p>
+          <p>
+            Do you really want to delete
+            <strong>"<%= client_data.name %>"</strong>?
+          </p>
+          <form method="POST">
+            <div class="input-field">
+              <input
+                id="client_id"
+                name="client_id"
+                type="hidden"
+                value="<%= client_data._id %>"
+              />
+            </div>
+            <button
+              class="btn waves-effect waves-light"
+              type="submit"
+              name="action"
+            >
+              Delete
+              <i class="material-icons right">send</i>
+            </button>
+          </form>
           <% } %>
         </div>
       </div>

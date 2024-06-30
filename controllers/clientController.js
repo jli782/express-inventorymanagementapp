@@ -106,11 +106,45 @@ exports.client_create_POST = [
 ];
 
 exports.client_delete_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Client delete GET`);
+  const [client, client_mechs_purchased] = await Promise.all([
+    Client.findById(req.params.id).exec(),
+    MechPartInstance.find({
+      client: req.params.id,
+    })
+      .sort({ dateSold: -1 })
+      .exec(),
+  ]);
+  console.log(client, client_mechs_purchased);
+  if (!client) {
+    res.redirect("/shopwiki/clients");
+  }
+  res.render("client_delete", {
+    title: `Delete Client`,
+    client_data: client,
+    client_mechs_data: client_mechs_purchased,
+  });
 });
 
 exports.client_delete_DELETE = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Client delete DELETE`);
+  const [client, client_mechs_purchased] = await Promise.all([
+    Client.findById(req.params.id).exec(),
+    MechPartInstance.find({
+      client: req.params.id,
+    })
+      .sort({ dateSold: -1 })
+      .exec(),
+  ]);
+  console.log(client, client_mechs_purchased);
+  if (client_mechs_purchased.length > 0) {
+    res.render("client_delete", {
+      title: `Delete Client`,
+      client_data: client,
+      client_mechs_data: client_mechs_purchased,
+    });
+  } else {
+    await Client.findByIdAndDelete(req.body.client_id).exec();
+    res.redirect("/shopwiki/clients");
+  }
 });
 
 exports.client_update_GET = asyncHandler(async (req, res, next) => {
