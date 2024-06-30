@@ -64,8 +64,14 @@ exports.manufacturer_create_POST = [
 
     const manufacturer = new Manufacturer({
       name: req.body.name,
-      location: req.body.location,
-      description: req.body.description,
+      location: req.body.location
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
+      description: req.body.description
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
     });
     if (!err.isEmpty()) {
       res.render("manufacturer_form", {

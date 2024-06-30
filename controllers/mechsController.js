@@ -34,6 +34,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 exports.mechs_list = asyncHandler(async (req, res, next) => {
   // res.send(`NOT IMPLEMENTED: Mechs list`);
   const mechs_data = await Mechs.find({}, "name model imageURL weight")
+    .sort({ weight: 1 })
     .populate("category")
     .exec();
   console.log(mechs_data);
@@ -56,7 +57,8 @@ exports.mechs_detail = asyncHandler(async (req, res, next) => {
     data: mechs_data,
     formatted_description: mechs_data.description
       .replaceAll("&#x27;", "'")
-      .replaceAll("&#x2F;", "/"),
+      .replaceAll("&#x2F;", "/")
+      .replaceAll("&quot;", "'"),
   });
 });
 

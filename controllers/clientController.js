@@ -77,11 +77,11 @@ exports.client_create_POST = [
     const err = validationResult(req);
     const client = new Client({
       name: req.body.name,
-      address: req.body.address.replace("&#x27;", "'"),
+      address: req.body.address.replaceAll("&#x27;", "'"),
       postalCode: req.body.postalCode,
       email: req.body.email,
       phone: req.body.phone,
-      description: req.body.description,
+      description: req.body.description.replaceAll("&#x27;", "'"),
     });
     if (!err.isEmpty()) {
       err.array().map((e) => console.log(e));
