@@ -73,7 +73,7 @@ router.get("/category/:id", category_controller.category_detail);
 router.get("/client/create", client_controller.client_create_GET);
 router.post("/client/create", client_controller.client_create_POST);
 router.get("/client/delete/:id", client_controller.client_delete_GET);
-router.delete("/client/delete/:id", client_controller.client_delete_DELETE);
+router.post("/client/delete/:id", client_controller.client_delete_DELETE);
 router.get("/client/update/:id", client_controller.client_update_GET);
 router.put("/client/update/:id", client_controller.client_update_PUT);
 router.get("/clients", client_controller.client_list);
