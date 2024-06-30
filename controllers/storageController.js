@@ -130,7 +130,6 @@ exports.storage_delete_DELETE = asyncHandler(async (req, res, next) => {
 
 exports.storage_update_GET = asyncHandler(async (req, res, next) => {
   const storage_data = await Storage.findById(req.params.id).exec();
-  const storages = await Storage.find().sort({ name: 1 }).exec();
 
   if (!storage_data) {
     const err = new Error("Storage not found.");
@@ -141,7 +140,6 @@ exports.storage_update_GET = asyncHandler(async (req, res, next) => {
     title: `Update Storage`,
     errors: undefined,
     storage: storage_data,
-    storages: storages,
   });
 });
 exports.storage_update_POST = [
@@ -156,13 +154,11 @@ exports.storage_update_POST = [
     const storage = new Storage({ name: req.body.name, _id: req.params.id });
     if (!err.isEmpty()) {
       err.array().map((e) => console.log(e.msg));
-      const storages = await Storage.find().sort({ name: 1 }).exec();
 
       res.render("storage_form", {
         title: `Update Storage`,
         errors: err.array(),
         storage: storage,
-        storages: storages,
       });
     } else {
       const updatedStorage = await Storage.findOneAndUpdate(

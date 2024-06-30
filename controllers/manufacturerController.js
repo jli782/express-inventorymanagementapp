@@ -142,9 +142,68 @@ exports.manufacturer_delete_DELETE = asyncHandler(async (req, res, next) => {
 });
 
 exports.manufacturer_update_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer update GET`);
+  const manufacturer_data = await Manufacturer.findById(req.params.id).exec();
+  if (!manufacturer_data) {
+    const err = new Error("Manufacturer not found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("manufacturer_form", {
+    title: `Update Manufacturer`,
+    manufacturer: manufacturer_data,
+    errors: undefined,
+  });
 });
 
-exports.manufacturer_update_POST = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Manufacturer update POST`);
-});
+exports.manufacturer_update_POST = [
+  body("name")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Manufacturer name must be specified.")
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage("Manufacturer name has non-alphanumeric characters."),
+  body("location")
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .escape()
+    .withMessage("Location must be specified and not be over 50 characters."),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Description must be provided for the manufacturer."),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+
+    const manufacturer = new Manufacturer({
+      name: req.body.name,
+      location: req.body.location
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
+      description: req.body.description
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
+      _id: req.params.id,
+    });
+    if (!err.isEmpty()) {
+      err.array().map((e) => console.log(e.msg));
+
+      res.render("manufacturer_form", {
+        title: `Update Manufacturer`,
+        manufacturer: manufacturer,
+        errors: err.array(),
+      });
+      return;
+    } else {
+      const updatedManufacturer = await Manufacturer.findOneAndUpdate(
+        { _id: req.params.id },
+        manufacturer,
+        {}
+      ).exec();
+      res.redirect(updatedManufacturer.url);
+    }
+  }),
+];
