@@ -15,13 +15,16 @@
             href="delete/<%= data._id %>"
             ><i class="material-icons right">delete</i>Delete</a
           >
+          <a class="waves-effect waves-light btn" href="update/<%= data._id %>"
+            ><i class="material-icons right">update</i>Update</a
+          >
         </div>
         <div class="col s8">
           <h4>Model: <%= data.model %></h4>
           <h4>Name: <%= data.name %></h4>
           <p>Era: <%= data.era %> | Tech: <%= data.tech %></p>
           <p>Class: <%= data.category.name %> | Tonnage: <%= data.weight %></p>
-          <p><%= formatted_description %></p>
+          <p><%= data.description %></p>
           <p>Value: <%= data.price_formatted %> c-bills</p>
           <p>Battle Value: <%= data.battle_value %></p>
           <strong>Armaments:</strong>

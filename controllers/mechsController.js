@@ -46,19 +46,9 @@ exports.mechs_detail = asyncHandler(async (req, res, next) => {
   const mechs_data = await Mechs.findById(req.params.id)
     .populate("category")
     .exec();
-  console.log(
-    mechs_data,
-    `description: ${mechs_data.description
-      .replaceAll("&#x27;", "'")
-      .replaceAll("&#x2F;", "/")}`
-  );
   res.render("mechs_detail", {
     title: "Mech Detail",
     data: mechs_data,
-    formatted_description: mechs_data.description
-      .replaceAll("&#x27;", "'")
-      .replaceAll("&#x2F;", "/")
-      .replaceAll("&quot;", "'"),
   });
 });
 
@@ -156,7 +146,10 @@ exports.mechs_create_POST = [
       model: req.body.model,
       era: req.body.era,
       tech: req.body.tech,
-      description: req.body.description,
+      description: req.body.description
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
       weight: req.body.weight,
       price: req.body.price,
       battle_value: req.body.battle_value,
@@ -183,7 +176,6 @@ exports.mechs_create_POST = [
         res.redirect(mech.url);
       }
     }
-    next();
   }),
 ];
 
@@ -237,8 +229,132 @@ exports.mechs_delete_DELETE = asyncHandler(async (req, res, next) => {
 });
 
 exports.mechs_update_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Mechs update GET`);
+  const mech_data = await Mechs.findOne({ _id: req.params.id }).exec();
+
+  if (!mech_data) {
+    const err = new Error("Mech Not Found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("mechs_form", {
+    title: "Update Mech",
+    errors: undefined,
+    mechs: mech_data,
+  });
 });
-exports.mechs_update_UPDATE = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Mechs update PUT`);
-});
+exports.mechs_update_UPDATE = [
+  body(`name`, `Battlemech name is empty.`)
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage(`Battlemech name has non-alphanumeric characters.`),
+  body(`model`, `Model is empty.`)
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage(`Battlemech model has non-alphanumeric characters.`),
+  body(`era`, `Era is empty.`)
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage(`Era has non-alphanumeric characters.`),
+  body(`imageURL`)
+    .trim()
+    .isLength({ min: 1 })
+    .isURL()
+    .withMessage(`ImageURL is invalid.`),
+  body("tech", "Tech level must not be empty.")
+    .trim()
+    .escape()
+    .custom((tech) => {
+      console.log(`tech: `, tech.length);
+      return tech.length !== 0;
+    }),
+  body(`equipment`, `Armaments is empty.`)
+    .trim()
+    .isLength({ min: 1 })
+    .isWhitelisted(
+      "abcdefghijklmnopqrstuvwxyz-QWERTYUIOPASDFGHJKLZXCVBNM 0123456789,/"
+    )
+    .withMessage(
+      `Armaments is invalid format. Use a comma-separated list (ie. 1x SRM4, 2x medium laser)`
+    ),
+  body(`description`)
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("Description must be provided for the manufacturer."),
+  body(`weight`)
+    .trim()
+    .ltrim(`0`)
+    .isInt({
+      gt: -1,
+      lt: 999,
+    })
+    .withMessage(`Mech Weight is not a positive integer or out of bounds.`),
+  body(`price`)
+    .trim()
+    .ltrim(`0`)
+    .isInt({
+      gt: -1,
+    })
+    .withMessage(`Price is not a positive integer.`),
+  body(`battle_value`)
+    .trim()
+    .ltrim(`0`)
+    .isInt({
+      gt: -1,
+    })
+    .withMessage(`Battle Value is not a positive integer.`),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+
+    // get the category property based on weight from form in req.body.weight
+    console.log(`req.body.weight - ${req.body.weight}`);
+    const mechCategory = await Category.findOne()
+      .where("weightMin")
+      .lte(req.body.weight)
+      .where("weightMax")
+      .gte(req.body.weight)
+      .exec();
+
+    console.log(`mechCategory - `, mechCategory);
+    err.array().map((e) => console.log(e));
+
+    const mech = new Mechs({
+      name: req.body.name,
+      model: req.body.model,
+      era: req.body.era,
+      tech: req.body.tech,
+      description: req.body.description
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
+      weight: req.body.weight,
+      price: req.body.price,
+      battle_value: req.body.battle_value,
+      equipment: req.body.equipment.split(","),
+      imageURL: req.body.imageURL,
+      category: mechCategory,
+      _id: req.params.id,
+    });
+    console.log(mech);
+    if (!err.isEmpty()) {
+      res.render("mechs_form", {
+        title: `Update Mech`,
+        errors: err.array(),
+        mechs: mech,
+      });
+    } else {
+      const updatedMech = await Mechs.findOneAndUpdate(
+        { _id: req.params.id },
+        mech,
+        {}
+      ).exec();
+      res.redirect(updatedMech.url);
+    }
+  }),
+];
