@@ -143,9 +143,70 @@ exports.category_delete_DELETE = asyncHandler(async (req, res, next) => {
 });
 
 exports.category_update_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Category update GET`);
+  const category_data = await Category.findOne({ _id: req.params.id }).exec();
+  if (!category_data) {
+    const err = new Error("Category not found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("category_form", {
+    title: `Update Category`,
+    errors: undefined,
+    category: category_data,
+  });
 });
 
-exports.category_update_POST = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Category update PUT`);
-});
+exports.category_update_POST = [
+  body("name", "Category name must not be empty.")
+    .trim()
+    .isLength({ min: 4 })
+    .isAlphanumeric()
+    .withMessage(`Category name is not alphanumeric`)
+    .escape(),
+  body("weightMin", "Minimum weight is empty.")
+    .trim()
+    .isInt({
+      gt: -1,
+      lt: 999,
+    })
+    .withMessage(`Minimum Weight is not a positive integer or out of bounds.`),
+  body("weightMax", "Maximum weight is empty.")
+    .trim()
+    .isInt({ gt: -1, lt: 999 })
+    .withMessage(`Maximum Weight is not a positive integer or out of bounds.`)
+    .ltrim(`0`),
+  body(`description`, `Category description is empty.`)
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+
+    const category = new Category({
+      name: req.body.name,
+      weightMin: req.body.weightMin,
+      weightMax: req.body.weightMax,
+      description: req.body.description
+        .replaceAll("&#x27;", "'")
+        .replaceAll("&#x2F;", "/")
+        .replaceAll("&quot;", "'"),
+      _id: req.params.id,
+    });
+    if (!err.isEmpty()) {
+      console.log(category);
+      res.render("category_form", {
+        title: `Update Category`,
+        errors: err.array(),
+        category: category,
+      });
+      return;
+    } else {
+      const updatedCategory = await Category.findOneAndUpdate(
+        { _id: req.params.id },
+        category,
+        {}
+      ).exec();
+      res.redirect(updatedCategory.url);
+    }
+  }),
+];
