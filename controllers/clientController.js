@@ -148,9 +148,79 @@ exports.client_delete_DELETE = asyncHandler(async (req, res, next) => {
 });
 
 exports.client_update_GET = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Client update GET`);
+  const client_data = await Client.findOne({ _id: req.params.id }).exec();
+  if (!client_data) {
+    const err = new Error("Client not found.");
+    err.status = 404;
+    return next(err);
+  }
+  res.render("client_form", {
+    title: `Update Client`,
+    errors: undefined,
+    form_client: client_data,
+  });
 });
 
-exports.client_update_POST = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Client update PUT`);
-});
+exports.client_update_POST = [
+  body("name")
+    .trim()
+    .isLength({ min: 3 })
+    .escape()
+    .withMessage("Client name must contain at least 3 characters")
+    .isAlphanumeric(["en-US"], { ignore: " _-" })
+    .withMessage("Client name has non-alphanumeric characters."),
+  body("address")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Client location is empty.")
+    .isAlphanumeric(["en-US"], { ignore: " _-'" })
+    .withMessage("Location has non-alphanumeric characters.")
+    .escape(),
+  body("postalCode")
+    .trim()
+    .isLength({ min: 6 })
+    .escape()
+    .withMessage("Postal is too short.")
+    .isPostalCode("any")
+    .withMessage("Postal is not valid postal code."),
+  body("email").trim().isEmail().normalizeEmail().withMessage("Email is empty"),
+  body("phone")
+    .trim()
+    .isLength({ min: 10 })
+    .withMessage("Phone no. too short.")
+    .isNumeric()
+    .withMessage("Phone no. has non-numeric characters."),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage(`Description is empty.`)
+    .escape(),
+  asyncHandler(async (req, res, next) => {
+    const err = validationResult(req);
+    const client = new Client({
+      name: req.body.name,
+      address: req.body.address.replaceAll("&#x27;", "'"),
+      postalCode: req.body.postalCode,
+      email: req.body.email,
+      phone: req.body.phone,
+      description: req.body.description.replaceAll("&#x27;", "'"),
+      _id: req.params.id,
+    });
+    if (!err.isEmpty()) {
+      err.array().map((e) => console.log(e));
+      console.log(`updated client: `, client);
+      res.render("client_form", {
+        title: `Update Client`,
+        errors: err.array(),
+        form_client: client,
+      });
+    } else {
+      const updatedClient = await Client.findOneAndUpdate(
+        { _id: req.params.id },
+        client,
+        {}
+      ).exec();
+      res.redirect(updatedClient.url);
+    }
+  }),
+];
