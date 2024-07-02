@@ -188,6 +188,17 @@
   <script>
     $(document).ready(function () {
       $("select").formSelect();
+
+      if ($("#imageURL")[0].value.length !== 0) {
+        while (preview.firstChild) {
+          preview.removeChild(preview.firstChild);
+        }
+        const image = document.createElement("img");
+        const source = $("#imageURL")[0].value;
+        // console.log(`source: ${source}`);
+        image.src = source;
+        $(".preview").append(image);
+      }
     });
 
     // FilePond preview image plugin
@@ -206,11 +217,6 @@
       while (preview.firstChild) {
         preview.removeChild(preview.firstChild);
       }
-      /*       if (e.detail.file.fileSize == 0) {
-        const para = document.createElement("p");
-        para.textContent = "No image file selected for upload.";
-        $(".preview").append(para);
-      } */
     });
     document.addEventListener("FilePond:removefile", (e) => {
       const para = document.createElement("p");
@@ -219,7 +225,7 @@
     });
     //////////////
     const preview = document.querySelector(".preview");
-    $("#imageURL").on("change", function () {
+    const imagePreviewFunc = function (e) {
       // console.log($(this)[0].value);
       while (preview.firstChild) {
         preview.removeChild(preview.firstChild);
@@ -235,6 +241,7 @@
         image.src = source;
         $(".preview").append(image);
       }
-    });
+    };
+    $("#imageURL").on("change", imagePreviewFunc);
   </script>
 </html>
