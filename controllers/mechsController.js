@@ -128,9 +128,9 @@ exports.mechs_create_POST = [
     .withMessage(`Battle Value is not a positive integer.`),
   asyncHandler(async (req, res, next) => {
     const err = validationResult(req);
-
+    console.log(`req.file.url: `, req.file.url);
     // get the category property based on weight from form in req.body.weight
-    console.log(`req.body.weight - ${req.body.weight}`);
+    // console.log(`req.body.weight - ${req.body.weight}`);
     const mechCategory = await Category.findOne()
       .where("weightMin")
       .lte(req.body.weight)
@@ -138,7 +138,7 @@ exports.mechs_create_POST = [
       .gte(req.body.weight)
       .exec();
 
-    console.log(`mechCategory - `, mechCategory);
+    // console.log(`mechCategory - `, mechCategory);
     err.array().map((e) => console.log(e));
 
     const mech = new Mechs({
@@ -154,10 +154,10 @@ exports.mechs_create_POST = [
       price: req.body.price,
       battle_value: req.body.battle_value,
       equipment: req.body.equipment.split(","),
-      imageURL: req.body.imageURL,
+      imageURL: req.file.url || req.body.imageURL,
       category: mechCategory,
     });
-    console.log(mech);
+    // console.log(mech);
     if (!err.isEmpty()) {
       res.render("mechs_form", {
         title: `Create Mech`,

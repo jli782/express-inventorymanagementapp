@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 const category_controller = require("../controllers/categoryController");
 const client_controller = require("../controllers/clientController");
@@ -7,11 +9,23 @@ const manufacturer_controller = require("../controllers/manufacturerController")
 const mechs_controller = require("../controllers/mechsController");
 const mech_part_instance_controller = require("../controllers/mechpartinstanceController");
 const storage_controller = require("../controllers/storageController");
+const image_controller = require("../controllers/images/imageController");
 
 router.get("/", mechs_controller.index);
 
 router.get("/mechs/create", mechs_controller.mechs_create_GET);
-router.post("/mechs/create", mechs_controller.mechs_create_POST);
+router.post(
+  "/mechs/create",
+  upload.single("uploadImage"),
+  function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+    console.log(`req.file - multer uploadImage: ${req.file}`);
+    next();
+  },
+  image_controller.imageHandler,
+  mechs_controller.mechs_create_POST
+);
 router.get("/mechs/delete/:id", mechs_controller.mechs_delete_GET);
 router.post("/mechs/delete/:id", mechs_controller.mechs_delete_DELETE);
 router.get("/mechs/update/:id", mechs_controller.mechs_update_GET);

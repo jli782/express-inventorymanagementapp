@@ -10,7 +10,7 @@
     <div class="container">
       <div class="row">
         <h1><%= title %></h1>
-        <form class="col s12" method="POST">
+        <form class="col s12" method="POST" enctype="multipart/form-data">
           <div class="input-field col s3">
             <input
               placeholder="Battlemech Name"
@@ -83,18 +83,6 @@
             />
             <label for="battle_value">Battle Value</label>
           </div>
-          <div class="input-field col s6">
-            <input
-              placeholder="ex. https://cfw.sarna.net/wiki/images/"
-              type="text"
-              class="validate"
-              name="imageURL"
-              id="imageURL"
-              required
-              value="<% if (mechs !== undefined) { %><%= mechs.imageURL %><% } %>"
-            />
-            <label for="imageURL">Mech Image URL</label>
-          </div>
           <div class="input-field col s3">
             <select name="tech">
               <option value="">Select a tech level</option>
@@ -145,6 +133,22 @@
 <% if (mechs !== undefined){ %><%= mechs.description %><% } %></textarea
             >
             <label for="description">Mech Description</label>
+          </div>
+
+          <div class="input-field col s12">
+            <input
+              placeholder="ex. https://cfw.sarna.net/wiki/images/"
+              type="text"
+              class="validate"
+              name="imageURL"
+              id="imageURL"
+              required
+              value="<% if (mechs !== undefined) { %><%= mechs.imageURL %><% } %>"
+            />
+            <label for="imageURL">Mech Image URL</label>
+          </div>
+          <div class="input-field col s12">
+            <input type="file" name="uploadImage" />
           </div>
 
           <div class="input-field col">
