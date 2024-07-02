@@ -2,6 +2,10 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      href="https://unpkg.com/filepond@^4/dist/filepond.css"
+      rel="stylesheet"
+    />
     <title><%= title %></title>
   </head>
   <body>
@@ -169,10 +173,19 @@
     </div>
 
     <%- include('footer'); -%>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   </body>
   <script>
     $(document).ready(function () {
       $("select").formSelect();
+    });
+
+    // Get a reference to the file input element
+    const inputElement = document.querySelector('input[type="file"]');
+
+    // Create a FilePond instance
+    const pond = FilePond.create(inputElement, {
+      storeAsFile: true,
     });
   </script>
 </html>

@@ -128,7 +128,7 @@ exports.mechs_create_POST = [
     .withMessage(`Battle Value is not a positive integer.`),
   asyncHandler(async (req, res, next) => {
     const err = validationResult(req);
-    console.log(`req.file.url: `, req.file.url);
+    console.log(`req.file.url: `, req.file.url ? req.file.url : undefined);
     // get the category property based on weight from form in req.body.weight
     // console.log(`req.body.weight - ${req.body.weight}`);
     const mechCategory = await Category.findOne()
