@@ -29,7 +29,18 @@ router.post(
 router.get("/mechs/delete/:id", mechs_controller.mechs_delete_GET);
 router.post("/mechs/delete/:id", mechs_controller.mechs_delete_DELETE);
 router.get("/mechs/update/:id", mechs_controller.mechs_update_GET);
-router.post("/mechs/update/:id", mechs_controller.mechs_update_UPDATE);
+router.post(
+  "/mechs/update/:id",
+  upload.single("uploadImage"),
+  function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+    console.log(`req.file - multer uploadImage: ${req.file}`);
+    next();
+  },
+  image_controller.imageHandler,
+  mechs_controller.mechs_update_UPDATE
+);
 router.get("/mechs", mechs_controller.mechs_list);
 router.get("/mechs/:id", mechs_controller.mechs_detail);
 
