@@ -6,8 +6,14 @@
       href="https://unpkg.com/filepond@^4/dist/filepond.css"
       rel="stylesheet"
     />
+    <link
+      href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+      rel="stylesheet"
+    />
     <title><%= title %></title>
   </head>
+  <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+  <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   <body>
     <%- include('header'); -%>
 
@@ -142,17 +148,22 @@
           <div class="input-field col s12">
             <input
               placeholder="ex. https://cfw.sarna.net/wiki/images/"
-              type="text"
+              type="url"
               class="validate"
               name="imageURL"
               id="imageURL"
               required
+              pattern="https://cfw.sarna.net/wiki/images/.*"
+              title='The image URL must be part of the "https://cfw.sarna.net" hosting'
               value="<% if (mechs !== undefined) { %><%= mechs.imageURL %><% } %>"
             />
             <label for="imageURL">Mech Image URL</label>
           </div>
           <div class="input-field col s12">
             <input type="file" name="uploadImage" />
+          </div>
+          <div class="col s12 preview">
+            <p>No image file selected for upload.</p>
           </div>
 
           <div class="input-field col">
@@ -173,12 +184,14 @@
     </div>
 
     <%- include('footer'); -%>
-    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   </body>
   <script>
     $(document).ready(function () {
       $("select").formSelect();
     });
+
+    // FilePond preview image plugin
+    FilePond.registerPlugin(FilePondPluginImagePreview);
 
     // Get a reference to the file input element
     const inputElement = document.querySelector('input[type="file"]');
@@ -186,6 +199,42 @@
     // Create a FilePond instance
     const pond = FilePond.create(inputElement, {
       storeAsFile: true,
+    });
+    document.addEventListener("FilePond:addfile", (e) => {
+      console.log(preview.firstChild);
+      console.log(`result: `, e.detail.file.fileSize);
+      while (preview.firstChild) {
+        preview.removeChild(preview.firstChild);
+      }
+      /*       if (e.detail.file.fileSize == 0) {
+        const para = document.createElement("p");
+        para.textContent = "No image file selected for upload.";
+        $(".preview").append(para);
+      } */
+    });
+    document.addEventListener("FilePond:removefile", (e) => {
+      const para = document.createElement("p");
+      para.textContent = "No image file selected for upload.";
+      $(".preview").append(para);
+    });
+    //////////////
+    const preview = document.querySelector(".preview");
+    $("#imageURL").on("change", function () {
+      // console.log($(this)[0].value);
+      while (preview.firstChild) {
+        preview.removeChild(preview.firstChild);
+      }
+      if ($(this)[0].value.length === 0) {
+        const para = document.createElement("p");
+        para.textContent = "No image file selected for upload.";
+        $(".preview").append(para);
+      } else {
+        const image = document.createElement("img");
+        const source = $(this)[0].value;
+        // console.log(`source: ${source}`);
+        image.src = source;
+        $(".preview").append(image);
+      }
     });
   </script>
 </html>
