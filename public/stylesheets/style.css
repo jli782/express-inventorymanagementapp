@@ -31,3 +31,9 @@ strong {
   of the button to still show through. */
    background-color: #6c91a3;
  }
+
+.card-image span.card-title {
+  -webkit-text-stroke: #ffab40; /* #546e7a */
+  -webkit-text-stroke-width: 1px;
+  font-weight: bolder;
+ }
