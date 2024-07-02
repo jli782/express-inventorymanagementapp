@@ -63,3 +63,6 @@ typings/
 populatedb.js
 populatedb1.js
 cbt-group-favorite-export-lance-1.json
+
+# multer image uploads
+uploads
