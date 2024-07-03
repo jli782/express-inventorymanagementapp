@@ -78,11 +78,9 @@ exports.mechs_create_POST = [
     .escape()
     .isAlphanumeric(["en-US"], { ignore: " _-" })
     .withMessage(`Era has non-alphanumeric characters.`),
-  body(`imageURL`)
-    .trim()
-    .isLength({ min: 1 })
-    .isURL()
-    .withMessage(`ImageURL is invalid.`),
+  body(`imageURL`, "Missing image url or image file input.")
+    .optional({ values: "falsy" })
+    .trim(),
   body("tech", "Tech level must not be empty.")
     .trim()
     .escape()
@@ -98,7 +96,27 @@ exports.mechs_create_POST = [
     )
     .withMessage(
       `Armaments is invalid format. Use a comma-separated list (ie. 1x SRM4, 2x medium laser)`
-    ),
+    )
+    .custom((equipment) => {
+      const equipInputs = equipment.split(",");
+      console.log(equipInputs);
+      for (let equip of equipInputs) {
+        const regexp = /^\d+\s*[xX]\s*[A-Za-z]+[ /-]*[A-Za-z]*\d*$/i;
+        console.log(`equip:`, equip);
+        console.log(regexp.exec(equip.trim()));
+        if (!regexp.exec(equip.trim()) && equip.trim() === "") continue;
+        if (!regexp.exec(equip.trim())) {
+          throw new Error(
+            "Invalid armament/character in armaments. Accepted characters: alphanumeric, whitespace, and special characters (/ or -)"
+          );
+        }
+      }
+      return true;
+    })
+    .customSanitizer((equipment) => {
+      // console.log(`custom sanitizer`, equipment.replace(/\s+/g, " "));
+      return equipment.replace(/\s+/g, " ");
+    }),
   body(`description`)
     .trim()
     .isLength({ min: 1 })
@@ -285,10 +303,11 @@ exports.mechs_update_UPDATE = [
     )
     .custom((equipment) => {
       const equipInputs = equipment.split(",");
-      // console.log(equipInputs);
+      console.log(equipInputs);
       for (let equip of equipInputs) {
-        const regexp = /^\d+[xX]\s+[A-Za-z]+[ /-]*[A-Za-z]*\d*$/i;
-        console.log(regexp.exec(equip.trim()));
+        const regexp = /^\d+\s*[xX]\s*[A-Za-z]+[ /-]*[A-Za-z]*\d*$/i;
+        console.log(`equip:`, equip, `regexp: `, regexp.exec(equip.trim()));
+        if (!regexp.exec(equip.trim()) && equip.trim() === "") continue;
         if (!regexp.exec(equip.trim())) {
           throw new Error(
             "Invalid armament/character in armaments. Accepted characters: alphanumeric, whitespace, and special characters (/ or -)"
