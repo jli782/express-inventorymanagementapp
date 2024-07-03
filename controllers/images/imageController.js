@@ -1,8 +1,9 @@
 // Require the cloudinary library
 const cloudinary = require("cloudinary").v2;
+const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 
-exports.imageHandler = async function (req, res, next) {
+exports.imageHandler = asyncHandler(async (req, res, next) => {
   // Configuration
   cloudinary.config({
     cloud_name: "diu9rddtm",
@@ -22,24 +23,25 @@ exports.imageHandler = async function (req, res, next) {
     console.log(`uploadResult: `, uploadResult);
 
     // Optimize delivery by resizing and applying auto-format and auto-quality
-    const optimizeUrl = cloudinary.url("shoes", {
+    const optimizeUrl = cloudinary.url(uploadResult.public_id, {
       fetch_format: "auto",
       quality: "auto",
+      width: 300,
     });
 
-    console.log(optimizeUrl);
+    console.log(`optimizeUrl: `, optimizeUrl);
 
     // Transform the image: auto-crop to square aspect_ratio
-    const autoCropUrl = cloudinary.url("shoes", {
+    /*     const autoCropUrl = cloudinary.url("shoes", {
       crop: "auto",
       gravity: "auto",
       width: 500,
       height: 500,
-    });
+    }); 
 
-    console.log(autoCropUrl);
+    console.log(autoCropUrl);*/
 
-    req.file.url = uploadResult.secure_url;
+    req.file.url = optimizeUrl; //uploadResult.secure_url;
   }
   next();
-};
+});
