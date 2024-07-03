@@ -146,6 +146,7 @@
           </div>
 
           <div class="input-field col s12">
+            <!-- https://\(cfw.sarna.net/wiki/images/.*\)\|\(res.cloudinary.com/.*\)-->
             <input
               placeholder="ex. https://cfw.sarna.net/wiki/images/"
               type="url"
@@ -153,8 +154,8 @@
               name="imageURL"
               id="imageURL"
               required
-              pattern="https://cfw.sarna.net/wiki/images/.*"
-              title='The image URL must be part of the "https://cfw.sarna.net" hosting'
+              pattern=".*\(cfw.sarna.net)\..*|(res.cloudinary.com)\..*"
+              title='The image URL must be part of the "https://cfw.sarna.net" or "res.cloudinary.com" hosting'
               value="<% if (mechs !== undefined) { %><%= mechs.imageURL %><% } %>"
             />
             <label for="imageURL">Mech Image URL</label>
@@ -219,11 +220,13 @@
       while (preview.firstChild) {
         preview.removeChild(preview.firstChild);
       }
+      document.querySelector("#imageURL").removeAttribute("required");
     });
     document.addEventListener("FilePond:removefile", (e) => {
       const para = document.createElement("p");
       para.textContent = "No image file selected for upload.";
       $(".preview").append(para);
+      document.querySelector("#imageURL").setAttribute("required");
     });
     //////////////
     const preview = document.querySelector(".preview");

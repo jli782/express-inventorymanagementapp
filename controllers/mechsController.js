@@ -261,11 +261,12 @@ exports.mechs_update_UPDATE = [
     .escape()
     .isAlphanumeric(["en-US"], { ignore: " _-" })
     .withMessage(`Era has non-alphanumeric characters.`),
-  body(`imageURL`)
-    .trim()
-    .isLength({ min: 1 })
-    .isURL()
-    .withMessage(`ImageURL is invalid.`),
+  body(`imageURL`, "Missing image url or image file input.")
+    .optional({ values: "falsy" })
+    .trim(),
+  // .isLength({ min: 1 })
+  // .isURL()
+  // .withMessage(`ImageURL is invalid.`),
   body("tech", "Tech level must not be empty.")
     .trim()
     .escape()
