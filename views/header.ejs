@@ -65,15 +65,19 @@
           >Logo</a
         >
         <ul class="left hide-on-med-and-down" id="nav-mobile">
-          <li class="active"><a href="/shopwiki">Home</a></li>
-          <li><a href="/shopwiki/mechs">All Mechs</a></li>
-          <li>
+          <li id="home"><a href="/shopwiki">Home</a></li>
+          <li id="mec"><a href="/shopwiki/mechs">All Mechs</a></li>
+          <li id="mechpartinst">
             <a href="/shopwiki/mechpartinstances">All Mech Part Instances</a>
           </li>
-          <li><a href="/shopwiki/storages">All Storages</a></li>
-          <li><a href="/shopwiki/categories">All Categories</a></li>
-          <li><a href="/shopwiki/clients">All Clients</a></li>
-          <li><a href="/shopwiki/manufacturers">All Manufacturers</a></li>
+          <li id="store"><a href="/shopwiki/storages">All Storages</a></li>
+          <li id="category">
+            <a href="/shopwiki/categories">All Categories</a>
+          </li>
+          <li id="client"><a href="/shopwiki/clients">All Clients</a></li>
+          <li id="manufacturer">
+            <a href="/shopwiki/manufacturers">All Manufacturers</a>
+          </li>
           <!-- Dropdown Trigger -->
           <li>
             <a class="dropdown-trigger" href="#!" data-target="dropdown1"
@@ -97,12 +101,39 @@
         this.className += " active";
       });
     } */
-    $(document).ready(function () {
-      $("div ul li").on("click", function () {
-        $("div ul li").hasClass("active").removeClass("active");
-        $(this).addClass("active");
-        console.log($(this));
+    $(function ($) {
+      let url = window.location.href;
+      $("nav ul li a").each(function () {
+        if (this.href === url) {
+          $(this).closest("li").addClass("active");
+        }
       });
     });
+
+    /*
+    switch (window.location.pathname) {
+  case "/shopwiki":
+    $("#home").addClass("active");
+    break;
+  case "/shopwiki/mechs":
+    $("#mec").addClass("active");
+    break;
+  case "/shopwiki/mechpartinstances":
+    $("#mechpartinst").addClass("active");
+    break;
+  case "/shopwiki/storages":
+    $("#store").addClass("active");
+    break;
+  case "/shopwiki/categories":
+    $("#category").addClass("active");
+    break;
+  case "/shopwiki/clients":
+    $("#client").addClass("active");
+    break;
+  case "/shopwiki/manufacturers":
+    $("#manufacturer").addClass("active");
+    break;
+}
+    */
   </script>
 </html>
