@@ -93,7 +93,8 @@
   <script>
     $(".dropdown-trigger").dropdown();
 
-    /* var navbtns = document.querySelectorAll("div ul li");
+    /* // following only works if javascript is not reloaded on page 
+    var navbtns = document.querySelectorAll("div ul li");
     for (let navbtn of navbtns) {
       navbtn.addEventListener("click", function () {
         var current = document.getElementsByClassName("active");
@@ -101,11 +102,20 @@
         this.className += " active";
       });
     } */
-    $(function ($) {
-      let url = window.location.href;
-      $("nav ul li a").each(function () {
+
+    // works even if javascript is reloaded on page
+    $(function () {
+      /*let url = window.location.path;
+       $("nav ul li a").each(function () {
         if (this.href === url) {
           $(this).closest("li").addClass("active");
+        }
+      }); */
+      let path = window.location.pathname;
+      $("nav ul li").each(function () {
+        // console.log($(this).children("a").attr("href"));
+        if ($(this).children("a").attr("href") === path) {
+          $(this).addClass("active");
         }
       });
     });
