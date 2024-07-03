@@ -1,8 +1,8 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 
 require("dotenv").config();
 const mongodbURL = process.env.MONGODB_URL;
@@ -22,11 +22,34 @@ async function run() {
   }
 }
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var shopwikiRouter = require("./routes/shopwiki");
+// compression middleware
+const compression = require("compression");
 
-var app = express();
+// helmet middleware for common vulnerabilities
+const helmet = require("helmet");
+
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const shopwikiRouter = require("./routes/shopwiki");
+
+const app = express();
+
+app.use(compression());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": [
+        "'self'",
+        "code.jquery.com",
+        "cdnjs.cloudflare.com",
+        "unpkg.com",
+        "'unsafe-hashes'",
+        "'nonce-rAnd0m'",
+      ],
+      "img-src": ["'self'", "cfw.sarna.net", "res.cloudinary.com"],
+    },
+  })
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

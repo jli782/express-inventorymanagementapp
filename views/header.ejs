@@ -90,27 +90,11 @@
 
     <!-- </div> -->
   </body>
-  <script>
+  <script nonce="rAnd0m">
     $(".dropdown-trigger").dropdown();
-
-    /* // following only works if javascript is not reloaded on page 
-    var navbtns = document.querySelectorAll("div ul li");
-    for (let navbtn of navbtns) {
-      navbtn.addEventListener("click", function () {
-        var current = document.getElementsByClassName("active");
-        current[0].className = current[0].classList.remove("active");
-        this.className += " active";
-      });
-    } */
 
     // works even if javascript is reloaded on page
     $(function () {
-      /*let url = window.location.path;
-       $("nav ul li a").each(function () {
-        if (this.href === url) {
-          $(this).closest("li").addClass("active");
-        }
-      }); */
       let path = window.location.pathname;
       $("nav ul li").each(function () {
         // console.log($(this).children("a").attr("href"));
@@ -119,31 +103,5 @@
         }
       });
     });
-
-    /*
-    switch (window.location.pathname) {
-  case "/shopwiki":
-    $("#home").addClass("active");
-    break;
-  case "/shopwiki/mechs":
-    $("#mec").addClass("active");
-    break;
-  case "/shopwiki/mechpartinstances":
-    $("#mechpartinst").addClass("active");
-    break;
-  case "/shopwiki/storages":
-    $("#store").addClass("active");
-    break;
-  case "/shopwiki/categories":
-    $("#category").addClass("active");
-    break;
-  case "/shopwiki/clients":
-    $("#client").addClass("active");
-    break;
-  case "/shopwiki/manufacturers":
-    $("#manufacturer").addClass("active");
-    break;
-}
-    */
   </script>
 </html>
