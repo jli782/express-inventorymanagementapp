@@ -282,7 +282,25 @@ exports.mechs_update_UPDATE = [
     )
     .withMessage(
       `Armaments is invalid format. Use a comma-separated list (ie. 1x SRM4, 2x medium laser)`
-    ),
+    )
+    .custom((equipment) => {
+      const equipInputs = equipment.split(",");
+      // console.log(equipInputs);
+      for (let equip of equipInputs) {
+        const regexp = /^\d+[xX]\s+[A-Za-z]+[ /-]*[A-Za-z]*\d*$/i;
+        console.log(regexp.exec(equip.trim()));
+        if (!regexp.exec(equip.trim())) {
+          throw new Error(
+            "Invalid armament/character in armaments. Accepted characters: alphanumeric, whitespace, and special characters (/ or -)"
+          );
+        }
+      }
+      return true;
+    })
+    .customSanitizer((equipment) => {
+      // console.log(`custom sanitizer`, equipment.replace(/\s+/g, " "));
+      return equipment.replace(/\s+/g, " ");
+    }),
   body(`description`)
     .trim()
     .isLength({ min: 1 })
@@ -314,7 +332,7 @@ exports.mechs_update_UPDATE = [
     const err = validationResult(req);
 
     // get the category property based on weight from form in req.body.weight
-    console.log(`req.body.weight - ${req.body.weight}`);
+    // console.log(`req.body.weight - ${req.body.weight}`);
     const mechCategory = await Category.findOne()
       .where("weightMin")
       .lte(req.body.weight)
@@ -322,7 +340,7 @@ exports.mechs_update_UPDATE = [
       .gte(req.body.weight)
       .exec();
 
-    console.log(`mechCategory - `, mechCategory);
+    // console.log(`mechCategory - `, mechCategory);
     err.array().map((e) => console.log(e));
 
     const mech = new Mechs({
@@ -342,7 +360,7 @@ exports.mechs_update_UPDATE = [
       category: mechCategory,
       _id: req.params.id,
     });
-    console.log(mech);
+    // console.log(mech);
     if (!err.isEmpty()) {
       res.render("mechs_form", {
         title: `Update Mech`,
