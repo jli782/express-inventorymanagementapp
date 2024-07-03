@@ -197,6 +197,8 @@
         const source = $("#imageURL")[0].value;
         // console.log(`source: ${source}`);
         image.src = source;
+        image.width = 300;
+        image.height = 300;
         $(".preview").append(image);
       }
     });
@@ -239,6 +241,8 @@
         const source = $(this)[0].value;
         // console.log(`source: ${source}`);
         image.src = source;
+        image.width = 300;
+        image.height = 300;
         $(".preview").append(image);
       }
     };
