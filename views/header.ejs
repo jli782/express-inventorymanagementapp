@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %> sidebar</title>
     <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      integrity="sha256-6fGb7+6fZ/eRysAG3IUeRkkk5gofnPCXXUmsMDOhVHg="
+      crossorigin="anonymous"
     />
     <!-- jQuery -->
     <script
@@ -29,6 +31,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+
     <!-- /public/stylesheets/style.css-->
     <link
       rel="stylesheet"
@@ -65,17 +68,17 @@
           >Logo</a
         >
         <ul class="left hide-on-med-and-down" id="nav-mobile">
-          <li id="home"><a href="/shopwiki">Home</a></li>
-          <li id="mec"><a href="/shopwiki/mechs">All Mechs</a></li>
-          <li id="mechpartinst">
+          <li><a href="/shopwiki">Home</a></li>
+          <li><a href="/shopwiki/mechs">All Mechs</a></li>
+          <li>
             <a href="/shopwiki/mechpartinstances">All Mech Part Instances</a>
           </li>
-          <li id="store"><a href="/shopwiki/storages">All Storages</a></li>
-          <li id="category">
+          <li><a href="/shopwiki/storages">All Storages</a></li>
+          <li>
             <a href="/shopwiki/categories">All Categories</a>
           </li>
-          <li id="client"><a href="/shopwiki/clients">All Clients</a></li>
-          <li id="manufacturer">
+          <li><a href="/shopwiki/clients">All Clients</a></li>
+          <li>
             <a href="/shopwiki/manufacturers">All Manufacturers</a>
           </li>
           <!-- Dropdown Trigger -->
@@ -95,7 +98,7 @@
 
     // works even if javascript is reloaded on page
     $(function () {
-      let path = window.location.pathname;
+      let path = location.pathname;
       $("nav ul li").each(function () {
         // console.log($(this).children("a").attr("href"));
         if ($(this).children("a").attr("href") === path) {

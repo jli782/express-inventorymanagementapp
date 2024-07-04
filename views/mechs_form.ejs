@@ -3,17 +3,29 @@
   <head>
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <link
-      href="https://unpkg.com/filepond@^4/dist/filepond.css"
       rel="stylesheet"
+      href="https://unpkg.com/filepond@%5E4/dist/filepond.css"
+      integrity="sha256-hoQF7Revd+GT+Kaqo/U4ZmEU0wyE+hkCrCqHPq3p6r0="
+      crossorigin="anonymous"
     />
     <link
-      href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
       rel="stylesheet"
+      href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+      integrity="sha256-Pvns0U2VGwMUr/h+zjhTDnI4hOKDbPJ0HXN0JsoqZgY="
+      crossorigin="anonymous"
     />
     <title><%= title %></title>
   </head>
-  <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-  <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+  <script
+    src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"
+    integrity="sha256-5JziHzKDP7jz3alUCQDv7XDXxuilLVGAcI1drXmE/Bk="
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://unpkg.com/filepond@%5E4/dist/filepond.js"
+    integrity="sha256-JnSbPscu2Iq6S3UuP1gQGtXVV58Y2whKEPIvrDDAth8="
+    crossorigin="anonymous"
+  ></script>
   <body>
     <%- include('header'); -%>
 
@@ -186,7 +198,7 @@
 
     <%- include('footer'); -%>
   </body>
-  <script>
+  <script nonce="rAnd0m">
     $(document).ready(function () {
       $("select").formSelect();
 
