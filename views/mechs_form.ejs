@@ -166,7 +166,7 @@
               name="imageURL"
               id="imageURL"
               required
-              pattern=".*\(cfw.sarna.net)\..*|(res.cloudinary.com)\..*"
+              pattern=".*\/\/(cfw.sarna.net).*|.*\/\/(res.cloudinary.com).*"
               title='The image URL must be part of the "https://cfw.sarna.net" or "res.cloudinary.com" hosting'
               value="<% if (mechs !== undefined) { %><%= mechs.imageURL %><% } %>"
             />
