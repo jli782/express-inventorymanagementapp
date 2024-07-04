@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
 require("dotenv").config();
-const mongodbURL = process.env.MONGODB_URL;
+const mongodbURL = process.env.DATABASE_URL || process.env.MONGODB_URL; // prod OR dev db
 
 // mongodb connection setup
 const mongoose = require("mongoose");

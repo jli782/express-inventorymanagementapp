@@ -25,13 +25,15 @@
           <p><%= data.description %></p>
           <p>Value: <%= data.price_formatted %> c-bills</p>
           <p>Battle Value: <%= data.battle_value %></p>
-          <strong>Armaments:</strong>
-          <% for (let i = 0; i < data.equipment.length; i++){ %> <% if (i ==
-          data.equipment.length - 1){ %>
-          <span><%= data.equipment[i] %></span>
-          <% } else { %>
-          <span><%= data.equipment[i] %>, </span>
-          <% } %> <% } %>
+          <div class="row">
+            <strong class="col s2">Armaments:</strong>
+            <ul class="col s2" style="margin-top: unset; padding-left: unset">
+              <% for (let equipment of data.equipment){ %> <% if
+              (equipment.length > 0){ %>
+              <li>- <%= equipment %></li>
+              <% } %> <% } %>
+            </ul>
+          </div>
         </div>
         <div class="col s4">
           <image
