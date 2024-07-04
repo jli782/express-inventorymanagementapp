@@ -28,6 +28,14 @@ const compression = require("compression");
 // helmet middleware for common vulnerabilities
 const helmet = require("helmet");
 
+// express-rate-limit
+const RateLimit = require("express-rate-limit");
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60,
+});
+
+// routes
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const shopwikiRouter = require("./routes/shopwiki");
@@ -50,6 +58,7 @@ app.use(
     },
   })
 );
+app.use(limiter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
