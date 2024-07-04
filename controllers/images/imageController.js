@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 require("dotenv").config();
+const debug = require("debug")("image");
 
 exports.imageHandler = [
   upload.single("uploadImage"),
@@ -22,7 +23,7 @@ exports.imageHandler = [
     });
 
     if (req.file) {
-      console.log(`req.file.path: ${req.file.path}`);
+      debug(`req.file.path: ${req.file.path}`);
       // Upload an image
       const uploadResult = await cloudinary.uploader
         .upload(req.file.path)
@@ -30,7 +31,7 @@ exports.imageHandler = [
           console.log(error);
         });
 
-      console.log(`uploadResult: `, uploadResult);
+      debug(`uploadResult: `, uploadResult);
 
       // Optimize delivery by resizing and applying auto-format and auto-quality
       const optimizeUrl = cloudinary.url(uploadResult.public_id, {
@@ -40,7 +41,7 @@ exports.imageHandler = [
         width: 300,
       });
 
-      console.log(`optimizeUrl: `, optimizeUrl);
+      debug(`optimizeUrl: `, optimizeUrl);
 
       // Transform the image: auto-crop to square aspect_ratio
       /*     const autoCropUrl = cloudinary.url("shoes", {

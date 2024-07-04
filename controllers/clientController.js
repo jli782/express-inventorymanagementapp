@@ -2,16 +2,18 @@ const Client = require("../models/client");
 const MechPartInstance = require("../models/mechpartinstance");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("client");
 
 exports.client_list = asyncHandler(async (req, res, next) => {
-  const client_list_data = await Client.find({}).sort({ name: 1 }).exec();
-  console.log(client_list_data);
+  const client_list_data = await Client.find({}, "name")
+    .sort({ name: 1 })
+    .exec();
+  debug(`client_list`, client_list_data);
 
   res.render("client_list", {
     title: `List of Clients`,
     data: client_list_data,
   });
-  // res.send(`NOT IMPLEMENTED: Client list`);
 });
 
 exports.client_detail = asyncHandler(async (req, res, next) => {
@@ -23,7 +25,8 @@ exports.client_detail = asyncHandler(async (req, res, next) => {
       .sort({ dateSold: -1 })
       .exec(),
   ]);
-  console.log(client, client_mechs_purchased);
+  debug(`client_detail - client: `, client);
+  debug(`client_detail - client_mechs_purchased: `, client_mechs_purchased);
   res.render("client_detail", {
     title: `Client Detail`,
     client_data: client,
@@ -61,7 +64,11 @@ exports.client_create_POST = [
     .withMessage("Postal is too short.")
     .isPostalCode("any")
     .withMessage("Postal is not valid postal code."),
-  body("email").trim().isEmail().normalizeEmail().withMessage("Email is empty"),
+  body("email")
+    .trim()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Email is empty or invalid"),
   body("phone")
     .trim()
     .isLength({ min: 10 })
@@ -84,8 +91,8 @@ exports.client_create_POST = [
       description: req.body.description.replaceAll("&#x27;", "'"),
     });
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e));
-      console.log(client);
+      err.array().map((e) => debug(`client_create_POST err: `, e.msg));
+      debug(`client_create_POST client: `, client);
       res.render("client_form", {
         title: `Create Client`,
         errors: err.array(),
@@ -114,7 +121,7 @@ exports.client_delete_GET = asyncHandler(async (req, res, next) => {
       .sort({ dateSold: -1 })
       .exec(),
   ]);
-  console.log(client, client_mechs_purchased);
+  debug(`client_delete_GET`, client, client_mechs_purchased);
   if (!client) {
     res.redirect("/shopwiki/clients");
   }
@@ -134,7 +141,11 @@ exports.client_delete_DELETE = asyncHandler(async (req, res, next) => {
       .sort({ dateSold: -1 })
       .exec(),
   ]);
-  console.log(client, client_mechs_purchased);
+  debug(`client_delete_DELETE - client`, client);
+  debug(
+    `client_delete_DELETE - client_mechs_purchased`,
+    client_mechs_purchased
+  );
   if (client_mechs_purchased.length > 0) {
     res.render("client_delete", {
       title: `Delete Client`,
@@ -183,7 +194,11 @@ exports.client_update_POST = [
     .withMessage("Postal is too short.")
     .isPostalCode("any")
     .withMessage("Postal is not valid postal code."),
-  body("email").trim().isEmail().normalizeEmail().withMessage("Email is empty"),
+  body("email")
+    .trim()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Email is empty or invalid"),
   body("phone")
     .trim()
     .isLength({ min: 10 })
@@ -207,8 +222,8 @@ exports.client_update_POST = [
       _id: req.params.id,
     });
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e));
-      console.log(`updated client: `, client);
+      err.array().map((e) => debug(`client_update_POST err: `, e.msg));
+      debug(`updated client: `, client);
       res.render("client_form", {
         title: `Update Client`,
         errors: err.array(),

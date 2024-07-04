@@ -2,6 +2,7 @@ const Storage = require("../models/storage");
 const MechPartInstance = require("../models/mechpartinstance");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("storage");
 
 exports.storage_list = asyncHandler(async (req, res, next) => {
   const storage_data = await Storage.find({}).sort({ name: 1 }).exec();
@@ -12,7 +13,8 @@ exports.storage_list = asyncHandler(async (req, res, next) => {
       storage: storage._id,
     }).exec();
   }
-  console.log(storage_data);
+  debug(`storage_list - storage_data: `, storage_data);
+  debug(`storage_list - storage_data: `, count);
   res.render("storage_list", {
     title: "List of Storage Bays",
     data: storage_data,
@@ -25,20 +27,21 @@ exports.storage_detail = asyncHandler(async (req, res, next) => {
     MechPartInstance.find({
       storage: req.params.id,
     })
-      .populate("mechs client manufacturer")
+      .populate(
+        "mechs client manufacturer",
+        "model name serialNo price dateReceived dateSold"
+      )
       .sort({ name: 1 })
       .exec(),
   ]);
-  console.log(`storage: `, storage);
-  console.log(`stored mechs: `, storage_mechs_data);
+  debug(`storage_detail - storage: `, storage);
+  debug(`storage_detail - stored mech part instances: `, storage_mechs_data);
 
   res.render("storage_detail", {
     title: storage.name,
     storage: storage,
     storage_mechs: storage_mechs_data,
   });
-
-  // res.send(`NOT IMPLEMENTED: Storage detail ${req.params.id}`);
 });
 
 exports.storage_create_GET = asyncHandler(async (req, res, next) => {
@@ -59,7 +62,7 @@ exports.storage_create_POST = [
 
     const storage = new Storage({ name: req.body.name });
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e.msg));
+      err.array().map((e) => debug(`storage_create_POST err: `, e.msg));
       res.render("storage_form", {
         title: `Create Storage`,
         errors: err.array(),
@@ -89,8 +92,8 @@ exports.storage_delete_GET = asyncHandler(async (req, res, next) => {
       .sort({ name: 1 })
       .exec(),
   ]);
-  console.log(`storage: `, storage);
-  console.log(`stored mechs: `, storage_mechs_data);
+  debug(`storage_delete_GET - storage: `, storage);
+  debug(`storage_delete_GET - stored mechs: `, storage_mechs_data);
 
   if (!storage) {
     res.redirect(`/storages`);
@@ -112,9 +115,9 @@ exports.storage_delete_DELETE = asyncHandler(async (req, res, next) => {
       .sort({ name: 1 })
       .exec(),
   ]);
-  console.log(`storage: `, storage);
-  console.log(`stored mechs: `, storage_mechs_data);
-  console.log(`req.body.storage_id: `);
+  debug(`storage_delete_DELETE - storage: `, storage);
+  debug(`storage_delete_DELETE - stored mechs: `, storage_mechs_data);
+  // console.log(`req.body.storage_id: `);
   if (storage_mechs_data.length > 0) {
     res.render("storage_delete", {
       title: `Delete Storage`,
@@ -153,7 +156,7 @@ exports.storage_update_POST = [
 
     const storage = new Storage({ name: req.body.name, _id: req.params.id });
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e.msg));
+      err.array().map((e) => debug(`storage_update_POST err: `, e.msg));
 
       res.render("storage_form", {
         title: `Update Storage`,

@@ -6,6 +6,7 @@ const Client = require("../models/client");
 const Manufacturer = require("../models/manufacturer");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("mechs");
 
 exports.index = asyncHandler(async (req, res, next) => {
   // res.send(`NOT IMPLEMENTED: Site Home Page`);
@@ -37,15 +38,16 @@ exports.mechs_list = asyncHandler(async (req, res, next) => {
     .sort({ weight: 1 })
     .populate("category")
     .exec();
-  console.log(mechs_data);
+  debug(`mechs_list: `, mechs_data);
   res.render("mechs_list", { title: "List of Mechs", data: mechs_data });
 });
 
 exports.mechs_detail = asyncHandler(async (req, res, next) => {
   // res.send(`NOT IMPLEMENTED: Mechs detail ${req.params.id}`);
   const mechs_data = await Mechs.findById(req.params.id)
-    .populate("category")
+    .populate("category", "name")
     .exec();
+  debug(`mechs_detail: `, mechs_data);
   res.render("mechs_detail", {
     title: "Mech Detail",
     data: mechs_data,
@@ -101,7 +103,7 @@ exports.mechs_create_POST = [
       const equipInputs = equipment.split(",");
       console.log(equipInputs);
       for (let equip of equipInputs) {
-        const regexp = /^\d+\s*[xX]\s*[A-Za-z]+[ /-]*[A-Za-z]*\d*$/i;
+        const regexp = /^\d+\s*[xX]\s*[A-Za-z]+([ /-]*[A-Za-z]*)+\d*$/i;
         console.log(`equip:`, equip);
         console.log(regexp.exec(equip.trim()));
         if (!regexp.exec(equip.trim()) && equip.trim() === "") continue;
@@ -146,9 +148,12 @@ exports.mechs_create_POST = [
     .withMessage(`Battle Value is not a positive integer.`),
   asyncHandler(async (req, res, next) => {
     const err = validationResult(req);
-    console.log(`req.file.url: `, req.file ? req.file.url : undefined);
+    debug(
+      `mechs_create_POST - req.file.url: `,
+      req.file ? req.file.url : undefined
+    );
     // get the category property based on weight from form in req.body.weight
-    // console.log(`req.body.weight - ${req.body.weight}`);
+    debug(`mechs_create_POST - req.body.weight: ${req.body.weight}`);
     const mechCategory = await Category.findOne()
       .where("weightMin")
       .lte(req.body.weight)
@@ -156,9 +161,8 @@ exports.mechs_create_POST = [
       .gte(req.body.weight)
       .exec();
 
-    // console.log(`mechCategory - `, mechCategory);
-    err.array().map((e) => console.log(e));
-
+    console.log(`mechs_create_POST - mechCategory: `, mechCategory);
+    err.array().map((e) => debug(`mechs_create_POST err: `, e.msg));
     const mech = new Mechs({
       name: req.body.name,
       model: req.body.model,
@@ -199,17 +203,19 @@ exports.mechs_create_POST = [
 
 exports.mechs_delete_GET = asyncHandler(async (req, res, next) => {
   const [mechs_data, mech_part_instances] = await Promise.all([
-    Mechs.findById(req.params.id).populate("category").exec(),
-    MechPartInstance.find({
-      mechs: req.params.id,
-    })
+    Mechs.findById(req.params.id, "name").exec(),
+    MechPartInstance.find(
+      {
+        mechs: req.params.id,
+      },
+      "serialNo status"
+    )
       .sort({ status: 1 })
       .exec(),
   ]);
 
-  console.log(
-    `mechs_data ${mechs_data} | mech_part_instances ${mech_part_instances}`
-  );
+  debug(`mechs_delete_GET - mechs_data: `, mechs_data);
+  debug(`mechs_delete_GET - mech_part_instances: `, mech_part_instances);
   if (!mechs_data) {
     res.redirect("/shopwiki/mechs");
     return;
@@ -230,9 +236,9 @@ exports.mechs_delete_DELETE = asyncHandler(async (req, res, next) => {
       .exec(),
   ]);
 
-  console.log(
-    `mechs_data ${mechs_data} | mech_part_instances ${mech_part_instances} | req.body.mechs_id ${req.body.mechs_id}`
-  );
+  debug(`mechs_delete_DELETE - mechs_data:`, mechs_data);
+  debug(`mechs_delete_DELETE - mech_part_instances:`, mech_part_instances);
+  debug(`mechs_delete_DELETE - req.body.mechs_id: `, req.body.mechs_id);
   if (mech_part_instances.length > 0) {
     res.render("mechs_delete", {
       title: "Delete Mech",
@@ -305,8 +311,9 @@ exports.mechs_update_UPDATE = [
       const equipInputs = equipment.split(",");
       console.log(equipInputs);
       for (let equip of equipInputs) {
-        const regexp = /^\d+\s*[xX]\s*[A-Za-z]+[ /-]*[A-Za-z]*\d*$/i;
-        console.log(`equip:`, equip, `regexp: `, regexp.exec(equip.trim()));
+        const regexp = /^\d+\s*[xX]\s*[A-Za-z]+([ /-]*[A-Za-z]*)+\d*$/i;
+        console.log(`equip:`, equip);
+        console.log(regexp.exec(equip.trim()));
         if (!regexp.exec(equip.trim()) && equip.trim() === "") continue;
         if (!regexp.exec(equip.trim())) {
           throw new Error(
@@ -360,7 +367,7 @@ exports.mechs_update_UPDATE = [
       .exec();
 
     // console.log(`mechCategory - `, mechCategory);
-    err.array().map((e) => console.log(e));
+    err.array().map((e) => debug(`mechs_update_UPDATE err: `, e.msg));
 
     const mech = new Mechs({
       name: req.body.name,
@@ -379,7 +386,7 @@ exports.mechs_update_UPDATE = [
       category: mechCategory,
       _id: req.params.id,
     });
-    // console.log(mech);
+    debug(`mechs_update_UPDATE - mech: `, mech);
     if (!err.isEmpty()) {
       res.render("mechs_form", {
         title: `Update Mech`,
