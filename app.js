@@ -53,8 +53,14 @@ app.use(
         "unpkg.com",
         "'unsafe-hashes'",
         "'nonce-rAnd0m'",
+        "self blob: ",
       ],
-      "img-src": ["'self'", "cfw.sarna.net", "res.cloudinary.com"],
+      "img-src": [
+        "'self'",
+        "cfw.sarna.net",
+        "res.cloudinary.com",
+        "self blob: data:",
+      ],
     },
   })
 );

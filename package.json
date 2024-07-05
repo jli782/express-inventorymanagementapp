@@ -9,7 +9,7 @@
     "update": "npm update --save",
     "devstart": "nodemon ./bin/www",
     "serverstart": "set DEBUG=express-inventorymanagementapp:* & npm run devstart",
-    "debugstart": "set DEBUG=* & npm run devstart",
+    "debugstart": "set DEBUG=image,category,client,manufacturer,storage,mechs,mechpartinstance & npm run devstart",
     "start": "node ./bin/www"
   },
   "type": "commonjs",
