@@ -175,7 +175,9 @@ exports.mechs_create_POST = [
       weight: req.body.weight,
       price: req.body.price,
       battle_value: req.body.battle_value,
-      equipment: req.body.equipment.split(","),
+      equipment: req.body.equipment.split(",").map((equip) => {
+        return equip.toUpperCase().replace(/ ?X ?/, " x ");
+      }),
       imageURL: req.file ? req.file.url : req.body.imageURL,
       category: mechCategory,
     });
@@ -381,7 +383,9 @@ exports.mechs_update_UPDATE = [
       weight: req.body.weight,
       price: req.body.price,
       battle_value: req.body.battle_value,
-      equipment: req.body.equipment.split(","),
+      equipment: req.body.equipment.split(",").map((equip) => {
+        return equip.toUpperCase().replace(/ ?X ?/, " x ");
+      }),
       imageURL: req.file ? req.file.url : req.body.imageURL,
       category: mechCategory,
       _id: req.params.id,
