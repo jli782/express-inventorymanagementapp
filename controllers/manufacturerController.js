@@ -2,12 +2,13 @@ const Manufacturer = require("../models/manufacturer");
 const MechPartInstance = require("../models/mechpartinstance");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("manufacturer");
 
 exports.manufacturer_list = asyncHandler(async (req, res, next) => {
-  const manufacturer_list_data = await Manufacturer.find({})
+  const manufacturer_list_data = await Manufacturer.find({}, "name")
     .sort({ name: 1 })
     .exec();
-  console.log(manufacturer_list_data);
+  debug(`manufacturer_list`, manufacturer_list_data);
 
   res.render("manufacturer_list", {
     title: "List of Manufacturers and Suppliers",
@@ -18,14 +19,17 @@ exports.manufacturer_list = asyncHandler(async (req, res, next) => {
 exports.manufacturer_detail = asyncHandler(async (req, res, next) => {
   const [manufacturer_data, manufacturer_mechs_data] = await Promise.all([
     Manufacturer.findById(req.params.id).exec(),
-    MechPartInstance.find({
-      manufacturer: req.params.id,
-    })
-      .populate("storage client mechs")
+    MechPartInstance.find(
+      {
+        manufacturer: req.params.id,
+      },
+      "serialNo dateReceived status"
+    )
+      .populate("storage client mechs", "name")
       .exec(),
   ]);
 
-  console.log(manufacturer_data, manufacturer_mechs_data);
+  debug(`manufacturer_detail: `, manufacturer_data, manufacturer_mechs_data);
   res.render("manufacturer_detail", {
     title: `Manufacturer Detail`,
     manufacturer: manufacturer_data,
@@ -74,6 +78,7 @@ exports.manufacturer_create_POST = [
         .replaceAll("&quot;", "'"),
     });
     if (!err.isEmpty()) {
+      err.array().map((e) => debug(`manufacturer_create_POST err: `, e.msg));
       res.render("manufacturer_form", {
         title: `Create Manufacturer`,
         manufacturer: manufacturer,
@@ -99,15 +104,19 @@ exports.manufacturer_create_POST = [
 
 exports.manufacturer_delete_GET = asyncHandler(async (req, res, next) => {
   const [manufacturer_data, manufacturer_mechs_data] = await Promise.all([
-    Manufacturer.findById(req.params.id).exec(),
+    Manufacturer.findById(req.params.id, "name").exec(),
     MechPartInstance.find({
       manufacturer: req.params.id,
     })
-      .populate("storage client mechs")
+      .populate("storage client mechs", "name")
       .exec(),
   ]);
 
-  console.log(manufacturer_data, manufacturer_mechs_data);
+  debug(`manufactuer_delete_GET - manufacturer_data: `, manufacturer_data);
+  debug(
+    `manufacturer_delete_GET - manufacturer_mechs_data: `,
+    manufacturer_mechs_data
+  );
   if (!manufacturer_data) {
     res.redirect("/shopwiki/manufacturers");
   }
@@ -124,11 +133,15 @@ exports.manufacturer_delete_DELETE = asyncHandler(async (req, res, next) => {
     MechPartInstance.find({
       manufacturer: req.params.id,
     })
-      .populate("storage client mechs")
+      .populate("storage client mechs", { select: "name" })
       .exec(),
   ]);
-  console.log(`req.body.manufacturer_id : ${req.body.manufacturer_id}`);
-  console.log(manufacturer_data, manufacturer_mechs_data);
+  debug(`req.body.manufacturer_id : ${req.body.manufacturer_id}`);
+  debug(`manufacturer_delete_DELETE - manufacturer_data`, manufacturer_data);
+  debug(
+    `manufacturer_delete_DELETE - manufactuer_mechs_data`,
+    manufacturer_mechs_data
+  );
   if (manufacturer_mechs_data.length > 0) {
     res.render("manufacturer_delete", {
       title: `Delete Manufacturer`,
@@ -189,7 +202,7 @@ exports.manufacturer_update_POST = [
       _id: req.params.id,
     });
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e.msg));
+      err.array().map((e) => debug(`manufacturer_update_POST err: `, e.msg));
 
       res.render("manufacturer_form", {
         title: `Update Manufacturer`,

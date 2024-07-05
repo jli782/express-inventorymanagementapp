@@ -2,12 +2,13 @@ const Category = require("../models/category");
 const Mechs = require("../models/mechs");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("category");
 
 exports.category_list = asyncHandler(async (req, res, next) => {
   const category_data = await Category.find({}, "name weightMin weightMax")
     .sort({ weightMin: 1 })
     .exec();
-  console.log(category_data);
+  debug(`category_list`, category_data);
 
   res.render("category_list", {
     title: "List of Mech Categories",
@@ -22,7 +23,7 @@ exports.category_detail = asyncHandler(async (req, res, next) => {
     .gte(category_detail_data.weightMin)
     .lte(category_detail_data.weightMax)
     .exec();
-  console.log(category_detail_data, mech_list_by_category);
+  debug(`category_detail`, category_detail_data, mech_list_by_category);
 
   res.render("category_detail", {
     title: `Category Detail`,
@@ -46,6 +47,7 @@ exports.category_create_POST = [
   body("name", "Category name must not be empty.")
     .trim()
     .isLength({ min: 4 })
+    .withMessage(`Category name is too short.`)
     .isAlphanumeric()
     .withMessage(`Category name is not alphanumeric`)
     .escape(),
@@ -75,7 +77,7 @@ exports.category_create_POST = [
       description: req.body.description,
     });
     if (!err.isEmpty()) {
-      console.log(category);
+      debug(`category_create_POST err`, category);
       res.render("category_form", {
         title: `Create Category`,
         errors: err.array(),
@@ -109,7 +111,7 @@ exports.category_delete_GET = asyncHandler(async (req, res, next) => {
     .lte(category_detail_data.weightMax)
     .exec();
 
-  console.log(category_detail_data, mech_list_by_category);
+  debug(`category_delete_GET`, category_detail_data, mech_list_by_category);
   if (!category_detail_data) {
     res.redirect("/shopwiki/categories");
     return;
@@ -129,7 +131,7 @@ exports.category_delete_DELETE = asyncHandler(async (req, res, next) => {
     .lte(category_detail_data.weightMax)
     .exec();
 
-  console.log(category_detail_data, mech_list_by_category);
+  debug(`category_delete_DELETE`, category_detail_data, mech_list_by_category);
   if (mech_list_by_category.length > 0) {
     res.render("category_delete", {
       title: `Delete Category`,
@@ -144,6 +146,7 @@ exports.category_delete_DELETE = asyncHandler(async (req, res, next) => {
 
 exports.category_update_GET = asyncHandler(async (req, res, next) => {
   const category_data = await Category.findOne({ _id: req.params.id }).exec();
+  debug(`category_update_GET`, category_data);
   if (!category_data) {
     const err = new Error("Category not found.");
     err.status = 404;
@@ -160,6 +163,7 @@ exports.category_update_POST = [
   body("name", "Category name must not be empty.")
     .trim()
     .isLength({ min: 4 })
+    .withMessage(`Category name is too short`)
     .isAlphanumeric()
     .withMessage(`Category name is not alphanumeric`)
     .escape(),
@@ -193,7 +197,7 @@ exports.category_update_POST = [
       _id: req.params.id,
     });
     if (!err.isEmpty()) {
-      console.log(category);
+      err.array().map((e) => debug(`category_update_POST err: `, e.msg));
       res.render("category_form", {
         title: `Update Category`,
         errors: err.array(),

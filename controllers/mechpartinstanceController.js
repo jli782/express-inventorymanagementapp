@@ -5,13 +5,14 @@ const Client = require("../models/client");
 const Manufacturer = require("../models/manufacturer");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("mechpartinstance");
 
 exports.mechpartinstance_list = asyncHandler(async (req, res, next) => {
   const mech_part_instance_data = await MechPartInstance.find({})
     .populate("mechs storage client manufacturer", "name price")
     .sort({ status: -1 })
     .exec();
-  console.log(mech_part_instance_data);
+  debug(`mechpartinstance_list :`, mech_part_instance_data);
   res.render("mech_part_instance_list", {
     title: "List of Mech Part Instances",
     data: mech_part_instance_data,
@@ -21,7 +22,7 @@ exports.mechpartinstance_detail = asyncHandler(async (req, res, next) => {
   const mech_part_instance_data = await MechPartInstance.findById(req.params.id)
     .populate("mechs storage client manufacturer", "name model price imageURL")
     .exec();
-  console.log(mech_part_instance_data);
+  debug(`mechpartinstance_detail: `, mech_part_instance_data);
   res.render("mech_part_instance_detail", {
     title: "Mech Part Instance Detail",
     data: mech_part_instance_data,
@@ -35,9 +36,11 @@ exports.mechpartinstance_create_GET = asyncHandler(async (req, res, next) => {
     Client.find({}, "name").sort("name").exec(),
     Manufacturer.find({}, "name").sort("name").exec(),
   ]);
-  console.log(
-    `mechs: ${mechs} \n storages: ${storages} \n clients: ${clients} \n manufacturers: ${manufacturers}`
-  );
+
+  debug(`mechpartinstance_create_GET - mechs: `, mechs);
+  debug(`mechpartinstance_create_GET - storages: `, storages);
+  debug(`mechpartinstance_create_GET - manufacturers: `, manufacturers);
+
   res.render("mech_part_instance_form", {
     title: "Create Mech Part Instance",
     errors: undefined,
@@ -106,7 +109,11 @@ exports.mechpartinstance_create_POST = [
       Manufacturer.find({}, "name").sort("name").exec(),
     ]);
 
-    console.log(`creating mechpartinstance: ${req.body.client ? true : false}`);
+    debug(
+      `mechpartinstance_create_POST - creating mechpartinstance: ${
+        req.body.client ? true : false
+      }`
+    );
     const mech_part_instance = new MechPartInstance({
       serialNo: parseInt(req.body.serialNo, 10),
       status: req.body.status,
@@ -122,9 +129,14 @@ exports.mechpartinstance_create_POST = [
     //     mech_part_instance.mechs._id.toString() == mechs[0]._id.toString()
     //   } | ${mechs[0]._id} | ${mech_part_instance.mechs._id}`
     // );
-    console.log(`mech_part_instance: `, mech_part_instance);
+    debug(
+      `mechpartinstance_create_POST - mech_part_instance: `,
+      mech_part_instance
+    );
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e));
+      err
+        .array()
+        .map((e) => debug(`mechpartinstance_create_POST - err: `, e.msg));
       res.render("mech_part_instance_form", {
         title: "Create Mech Part Instance",
         errors: err.array(),
@@ -146,7 +158,7 @@ exports.mechpartinstance_delete_GET = asyncHandler(async (req, res, next) => {
   const mech_part_instance_data = await MechPartInstance.findById(req.params.id)
     .populate("mechs storage client manufacturer", "name model price imageURL")
     .exec();
-  console.log(mech_part_instance_data);
+  debug(`mechpartinstance_delete_GET: `, mech_part_instance_data);
 
   if (!mech_part_instance_data) {
     res.redirect("/shopwiki/mechpartinstances");
@@ -167,7 +179,7 @@ exports.mechpartinstance_delete_DELETE = asyncHandler(
         "name model price imageURL"
       )
       .exec();
-    console.log(mech_part_instance_data);
+    debug(`mechpartinstance_delete_DELETE: `, mech_part_instance_data);
 
     if (!mech_part_instance_data) {
       res.redirect("/shopwiki/mechpartinstances");
@@ -190,9 +202,13 @@ exports.mechpartinstance_update_GET = asyncHandler(async (req, res, next) => {
       Manufacturer.find({}, "name").sort("name").exec(),
       MechPartInstance.findOne({ _id: req.params.id }).exec(),
     ]);
-  console.log(
-    `mechs: ${mechs} \n storages: ${storages} \n clients: ${clients} \n manufacturers: ${manufacturers} \n mechpartinstance: ${mechpartinstance}`
-  );
+
+  debug(`mechpartinstance_update_GET - mechs: `, mechs);
+  debug(`mechpartinstance_update_GET - storages: `, storages);
+  debug(`mechpartinstance_update_GET - clients: `, clients);
+  debug(`mechpartinstance_update_GET - manufacturers: `, manufacturers);
+  debug(`mechpartinstance_update_GET - mechpartinstance: `, mechpartinstance);
+
   if (!mechpartinstance) {
     const err = new Error("Mech part instance not found.");
     err.status = 404;
@@ -289,9 +305,14 @@ exports.mechpartinstance_update_POST = [
     //     mech_part_instance.mechs._id.toString() == mechs[0]._id.toString()
     //   } | ${mechs[0]._id} | ${mech_part_instance.mechs._id}`
     // );
-    console.log(`new mech_part_instance: `, mech_part_instance);
+    debug(
+      `mechpartinstance_update_POST - updated mech_part_instance: `,
+      mech_part_instance
+    );
     if (!err.isEmpty()) {
-      err.array().map((e) => console.log(e));
+      err
+        .array()
+        .map((e) => debug(`mechpartinstance_update_POST err: `, e.msg));
       res.render("mech_part_instance_form", {
         title: "Update Mech Part Instance",
         errors: err.array(),

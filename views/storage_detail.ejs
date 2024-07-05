@@ -63,7 +63,10 @@
                 </td>
                 <td><%= mech.mechs.price_formatted %></td>
                 <td><%= mech.dateReceived_formatted %></td>
-                <td><%= mech.dateSold_formatted %></td>
+                <td>
+                  <% if (mech.dateSold_formatted.length > 0){ %> <%=
+                  mech.dateSold_formatted %> <% } else { %> - <% } %>
+                </td>
                 <td><a href="<%= mech.url %>">Explore</a></td>
               </tr>
               <% } %>
